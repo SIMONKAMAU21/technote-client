@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useGetAllStudentsQuery } from "./studentSlice";
 import CustomTable from "../../components/custom/table";
 import SearchInput from "../../components/custom/search";
-import { Box, HStack, useDisclosure } from "@chakra-ui/react";
+import { Box, HStack, Text, useDisclosure } from "@chakra-ui/react";
 import { formatDate } from "../../components/custom/dateFormat";
 import CustomButton from "../../components/custom/button";
 import { FaUserPlus } from "react-icons/fa";
@@ -59,7 +59,7 @@ const handleSearch =(e)=>{
       {isLoading ? (
         <p>Loading...</p>
       ) : error ? (
-        <p>Error: {error.message}</p>
+          <Text mt={{base:"2%"}} fontWeight={"bold"} alignSelf={"center"}  color={"red.500"}> {"Oops something went wrong check your internet connection and try again .... "}</Text>
       ) : (
         <CustomTable
           columns={columns}

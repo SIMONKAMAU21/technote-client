@@ -6,9 +6,8 @@ import Sidebar from './Sidebar'
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { colorMode, toggleColorMode } = useColorMode()
-
   const isDark = colorMode === 'dark';
-
+const user = JSON.parse(localStorage.getItem('user'))
   const navigate = useNavigate()
   const theme = useTheme()
   const textStyles = {
@@ -60,18 +59,18 @@ const Header = () => {
         />
         <Box sx={textStyles} onClick={handleLogout}>
           <Text sx={sStyles}>S</Text>
-          <Text>chool</Text>
+          <Text fontSize={{base:"9px",md:"18px"}}>chool</Text>
           <Text sx={sStyles}>M</Text>
-          <Text>anagement</Text>
+          <Text fontSize={{base:"9px",md:"18px"}}>anagement</Text>
         </Box>
         <HStack>
-          <Avatar size={{ base: "sm" }} name='admin' objectFit='cover' bg={theme.colors.accent.light}>
+          <Avatar size={{ base: "sm",md:"md" }} name={user.name} objectFit='cover' bg={theme.colors.accent.light}>
             <AvatarBadge bg='teal' boxSize={{ base: "10px", md: '1.2em' }} />
           </Avatar>
 
-          <VStack lineHeight={"10px"}>
-            <Text>admin@gmail.com</Text>
-            <Text alignSelf={"flex-start"}>Admin</Text>
+          <VStack display={{base:"none",md:"block"}}  >
+            <Text fontSize={{base:"12px",md:"18px"}}>{user.email}</Text>
+            <Text textTransform={"capitalize"} alignSelf={"flex-start"}>{user.role}</Text>
 
           </VStack>
           <IconButton

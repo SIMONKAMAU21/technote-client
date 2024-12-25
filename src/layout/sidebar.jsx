@@ -45,7 +45,7 @@ const Sidebar = ({isOpen,setIsOpen}) => {
     display: 'block',
     padding: '10px',
     borderRadius: '0px 20px 20px 0px',
-    margin: '5px 0',
+    margin: '5px 0 10px ',
     textDecoration: 'none',
     color: isDark ? 'white' : 'black',
   };
@@ -57,7 +57,7 @@ const Sidebar = ({isOpen,setIsOpen}) => {
   };
 
   const navItems = [
-    { to: '/Dashbord', label: 'Dashboard', icon: FaHome },
+    { to: '/Dashboard', label: 'Dashboard', icon: FaHome },
     { to: '/students', label: 'Students', icon: FaUserGraduate },
     { to: '/teachers', label: 'Teachers', icon: FaChalkboardTeacher },
     { to: '/classes', label: 'Classes', icon: FaBook },

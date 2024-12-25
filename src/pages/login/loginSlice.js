@@ -1,9 +1,15 @@
+
+const API= import.meta.env.VITE_DOMAIN
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 
+const users = JSON.parse(localStorage.getItem('user'))
+console.log('user', users)
+const token = users?.token
+console.log('token', token)
 export const LoginApi =createApi({
 reducerPath:"Login",
 tagTypes:['users'],
-baseQuery:fetchBaseQuery({baseUrl:'https://technotes-1w0k.onrender.com/api/'}),
+baseQuery:fetchBaseQuery({baseUrl:API}),
 endpoints:(builder)=>({
     login: builder.mutation({
         query:(login)=>({
@@ -17,10 +23,22 @@ endpoints:(builder)=>({
             url:"users",
             method:"GET"
         }),
+        providesTags:['users']
+    }),
+    addUser:builder.mutation({
+        query:(user)=>({
+            url:'users/add',
+            method:"POST",
+            headers: {
+                Authorization: `JWT ${token}`, // Corrected header format
+              },
+            body:user,
+           
+        }),
         invalidatesTags:['users']
     })
     
 })
 })
 
-export const{useLoginMutation,useGetAllUsersQuery}=LoginApi;
+export const{useLoginMutation,useGetAllUsersQuery,useAddUserMutation}=LoginApi;

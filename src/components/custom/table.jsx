@@ -8,12 +8,11 @@ import {
   Td,
   TableContainer,
 } from "@chakra-ui/react";
-import SearchInput from "./search";
 
 const CustomTable = ({ columns, data, onRowClick }) => {
   return (
     <TableContainer>
-      <Table variant="striped" colorScheme="teal">
+      <Table variant="striped" colorScheme="blue">
         <Thead>
           <Tr>
             {columns.map((col, index) => (
@@ -26,10 +25,12 @@ const CustomTable = ({ columns, data, onRowClick }) => {
             <Tr
               key={rowIndex}
               onClick={() => onRowClick && onRowClick(row)}
-              _hover={{ bg: "gray.100", cursor: onRowClick ? "pointer" : "default" }}
+              _hover={{ bg: "yellow.100", color:"black" ,cursor: onRowClick ? "pointer" : "default" }}
             >
               {columns.map((col, colIndex) => (
-                <Td key={colIndex}>{row[col.accessor]}</Td>
+                <Td textTransform={"capitalize"} key={colIndex}>
+                  {col.Cell ? col.Cell ({row}):
+                  row[col.accessor]}</Td>
               ))}
             </Tr>
           ))}

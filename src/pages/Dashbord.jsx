@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import { useGetAllUsersQuery } from './login/loginSlice'
-import { Box, HStack, SimpleGrid, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, HStack, Icon, IconButton, SimpleGrid, Spacer, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import SearchInput from '../components/custom/search'
 import CustomButton from '../components/custom/button'
 import CustomTable from '../components/custom/table'
-import { FaBookReader, FaPen, FaPenAlt, FaPersonBooth, FaUserPlus } from 'react-icons/fa'
+import { FaAd, FaBookReader, FaEdit, FaPen, FaPenAlt, FaPersonBooth, FaPlus, FaTrash, FaUserPlus } from 'react-icons/fa'
 import { formatDate } from '../components/custom/dateFormat'
 import CountBox from '../components/custom/countBox'
 import Badge from '../components/custom/badge'
+import UserAdd from '../components/userAdd'
 
 const Dashbord = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,6 +25,26 @@ const Dashbord = () => {
     { header: "phone", accessor: "phone" },
     { header: "Address", accessor: "address" },
     { header: "gender", accessor: "gender" },
+    {
+      header: 'Actions',
+      accessor: 'actions',
+      Cell: ({ row }) => (
+        <HStack spacing={2}>
+          <IconButton
+            icon={<FaEdit />}
+            size="sm"
+            colorScheme="blue"
+            // onClick={() => handleEdit(row.original)}
+          />
+          <IconButton
+            icon={<FaTrash />}
+            size="sm"
+            colorScheme="red"
+            // onClick={() => handleDelete(row.original)}
+          />
+        </HStack>
+      ),
+    },
   ];
   // Parse data for nested properties (e.g., "classId.name")
   const parseNestedData = (row, accessor) =>
@@ -31,17 +52,21 @@ const Dashbord = () => {
 
   // Format data for the table
   const formattedData = users
-    ? users.map((student) =>
+  ? users.map((user) =>
       columns.reduce((acc, col) => {
-        let value = parseNestedData(student, col.accessor)
-        if (col.accessor === "dob" || col.accessor === "enrollmentDate") {
-          value = formatDate(value)
+        if (col.accessor === 'actions') {
+          acc[col.accessor] = ''; // Skip for actions column
+        } else {
+          let value = parseNestedData(user, col.accessor);
+          if (col.accessor === 'dob' || col.accessor === 'enrollmentDate') {
+            value = formatDate(value);
+          }
+          acc[col.accessor] = value;
         }
-        acc[col.accessor] = value
         return acc;
       }, {})
     )
-    : [];
+  : [];
 
   const filteredData = formattedData.filter((row) => columns.some((col) => {
     const cellValue = row[col.accessor]?.toString().toLowerCase()
@@ -78,7 +103,7 @@ const Dashbord = () => {
       </SimpleGrid>
       <SimpleGrid columns={{ base: 3, md: 4 }}
         mt={{ base: "1%", md: "1%" }}
-        w={{md:"30%",base:"80%"}}
+        w={{ md: "30%", base: "80%" }}
         // spacing={{base:6,md:""}}
         sx={{
           "::-webkit-scrollbar": {
@@ -96,20 +121,22 @@ const Dashbord = () => {
       <Box mt={{ base: "5%", md: "1%" }}>
         <HStack >
           <SearchInput value={searchTerm} placeholder={"search student..."} onChange={handleSearch} />
-          <CustomButton onClick={onOpen} leftIcon={<FaUserPlus />} title={"Add Student"} bgColor={"blue.400"} />
+          <Spacer/>
+          {/* <CustomButton onClick={onOpen} leftIcon={<FaUserPlus />} title={"Add user"} bgColor={"blue.400"} /> */}
+          <IconButton onClick={onOpen} borderRadius={"50%"} bg={"blue.400"} icon={<FaPlus/>} size={{base:"sm",md:"md"}}/>
         </HStack>
         {isLoading ? (
-          <p>Loading...</p>
+          <p>Loading...
+          </p>
         ) : isError ? (
-          <p>Error: {"oops cant fetch"}</p>
+          <Text mt={{base:"2%"}} fontWeight={"bold"} alignSelf={"center"}  color={"red.500"}> {"Oops something went wrong check your internet connection and try again .... "}</Text>
         ) : (
           <CustomTable
             columns={columns}
             data={filteredData}
-            onRowClick={(row) => alert(`Student ID: ${row["_id"]}`)}
           />
         )}
-        {/* <StudentAdd isOpen={isOpen} onClose={onClose}/> */}
+        <UserAdd isOpen={isOpen} onClose={onClose} />
       </Box>
     </Box>
   )

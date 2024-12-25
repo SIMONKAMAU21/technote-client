@@ -6,13 +6,15 @@ import CustomInputs from "../../components/custom/input"; // Ensure the correct 
 import pencil from '../../assets/pencils.jpg'
 import { useLoginMutation } from "./loginSlice";
 import { ErrorToast, SuccessToast } from "../../components/toaster";
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "demo123" });
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
   const { colorMode } = useColorMode();
-
+  const [userDetails, setUserDetails] = useLocalStorage('user', null)
+  // handle change for inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -22,10 +24,11 @@ const Login = () => {
     e.preventDefault();
     try {
       const result = await login(formData).unwrap();
+      setUserDetails({...result?.user,token:result?.token})
       SuccessToast(result?.message)
       switch (result?.user?.role) {
         case "admin":
-          navigate('/Dashbord');
+          navigate('/Dashboard');
           break;
         case "student":
           navigate('/studentDashbord');
@@ -41,7 +44,7 @@ const Login = () => {
           ErrorToast("unknown role. please contact your admin")
       }
     } catch (error) {
-      ErrorToast("failed to login")
+      ErrorToast("failed to login"|| error?.data?.message)
     }
   };
 

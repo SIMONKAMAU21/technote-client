@@ -19,7 +19,7 @@ const Maincontent = () => {
       <Sidebar />
       <Box flex="2" p={4} ml={marginLeft} w="100%" overflow="hidden">
       <Routes>
-        <Route path='/Dashbord' element={<Dashbord/>}/>
+        <Route path='/Dashboard' element={<Dashbord/>}/>
         <Route path='/students' element={<Students/>}/>
         <Route path='/teachers' element={<Teachers/>}/>
         <Route path='/settings' element={<Settings/>}/>
