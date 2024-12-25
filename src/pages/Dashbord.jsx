@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useGetAllUsersQuery } from './login/loginSlice'
+import { useDeleteUserMutation, useGetAllUsersQuery } from './login/loginSlice'
 import { Box, HStack, Icon, IconButton, SimpleGrid, Spacer, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import SearchInput from '../components/custom/search'
 import CustomButton from '../components/custom/button'
@@ -9,11 +9,13 @@ import { formatDate } from '../components/custom/dateFormat'
 import CountBox from '../components/custom/countBox'
 import Badge from '../components/custom/badge'
 import UserAdd from '../components/userAdd'
+import { ErrorToast, LoadingToast, SuccessToast } from '../components/toaster'
 
 const Dashbord = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { data: users, isFetching, isLoading, isError } = useGetAllUsersQuery()
+  const [deleteUser]= useDeleteUserMutation()
   const handleSearch = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
   }
@@ -27,48 +29,33 @@ const Dashbord = () => {
     { header: "gender", accessor: "gender" },
     {
       header: 'Actions',
-      accessor: 'actions',
-      Cell: ({ row }) => (
+      // accessor: '_id',
+      Cell: ({ row }) => {
+        return ( 
         <HStack spacing={2}>
           <IconButton
             icon={<FaEdit />}
             size="sm"
             colorScheme="blue"
-            // onClick={() => handleEdit(row.original)}
+            onClick={() => handleEdit(row._id)}
           />
           <IconButton
             icon={<FaTrash />}
             size="sm"
             colorScheme="red"
-            // onClick={() => handleDelete(row.original)}
+            onClick={() => handleDelete(row._id)}
+            aria-label="Delete user"
+
           />
         </HStack>
-      ),
+     )
+    },
     },
   ];
-  // Parse data for nested properties (e.g., "classId.name")
-  const parseNestedData = (row, accessor) =>
-    accessor.split(".").reduce((obj, key) => obj?.[key], row);
+  
 
-  // Format data for the table
-  const formattedData = users
-  ? users.map((user) =>
-      columns.reduce((acc, col) => {
-        if (col.accessor === 'actions') {
-          acc[col.accessor] = ''; // Skip for actions column
-        } else {
-          let value = parseNestedData(user, col.accessor);
-          if (col.accessor === 'dob' || col.accessor === 'enrollmentDate') {
-            value = formatDate(value);
-          }
-          acc[col.accessor] = value;
-        }
-        return acc;
-      }, {})
-    )
-  : [];
 
-  const filteredData = formattedData.filter((row) => columns.some((col) => {
+  const filteredData = users?.filter((row) => columns.some((col) => {
     const cellValue = row[col.accessor]?.toString().toLowerCase()
     return cellValue?.includes(searchTerm)
   }))
@@ -78,9 +65,22 @@ const Dashbord = () => {
   const teacherCount = users ? users.filter((user) => user.role === "teacher").length : 0
   const adminCount = users ? users.filter((user) => user.role === "admin").length : 0
 
-
-
-
+const handleEdit =() =>{
+alert(edited, "edited")
+};
+const handleDelete = async(userId) =>{
+LoadingToast(true)
+try {
+  const response = await deleteUser(userId).unwrap()
+  SuccessToast(response.message)
+  LoadingToast(false)
+} catch (error) {
+  ErrorToast("failed to delete a user")
+  
+}finally{
+  LoadingToast(false)
+}
+}
   return (
     <Box>
       <SimpleGrid mt={{ base: "2%", md: "2%" }}
