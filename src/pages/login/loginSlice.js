@@ -43,9 +43,16 @@ export const LoginApi = createApi({
                 method: "DELETE"
             }),
             invalidatesTags:["users"]
+        }),
+        updateUser:builder.mutation({
+            query:(user)=>({
+                url:`users/${user.id}`,
+                method:"PUT",
+                body:user
+            })
         })
 
     })
 })
 
-export const { useLoginMutation, useGetAllUsersQuery, useAddUserMutation,useDeleteUserMutation } = LoginApi;
+export const { useLoginMutation, useGetAllUsersQuery, useAddUserMutation,useDeleteUserMutation,useUpdateUserMutation } = LoginApi;

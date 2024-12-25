@@ -5,7 +5,7 @@ import { Box, VStack, Heading, Text, Button, useToast, useColorMode, Image } fro
 import CustomInputs from "../../components/custom/input"; // Ensure the correct path
 import pencil from '../../assets/pencils.jpg'
 import { useLoginMutation } from "./loginSlice";
-import { ErrorToast, SuccessToast } from "../../components/toaster";
+import { ErrorToast, LoadingToast, SuccessToast } from "../../components/toaster";
 import useLocalStorage from "../../hooks/useLocalStorage";
 
 const Login = () => {
@@ -23,8 +23,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      LoadingToast(true)
       const result = await login(formData).unwrap();
-      setUserDetails({...result?.user,token:result?.token})
+      const response = setUserDetails({ ...result?.user, token: result?.token })
+      console.log('response', response)
       SuccessToast(result?.message)
       switch (result?.user?.role) {
         case "admin":
@@ -44,7 +46,9 @@ const Login = () => {
           ErrorToast("unknown role. please contact your admin")
       }
     } catch (error) {
-      ErrorToast("failed to login"|| error?.data?.message)
+      ErrorToast(`failed to login + ${error}`)
+    } finally {
+      LoadingToast(false)
     }
   };
 

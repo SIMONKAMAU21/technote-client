@@ -12,7 +12,7 @@ import {
 const CustomTable = ({ columns, data, onRowClick }) => {
   return (
     <TableContainer>
-      <Table variant="striped" colorScheme="blue">
+      <Table variant="simple" colorScheme="blue">
         <Thead>
           <Tr>
             {columns.map((col, index) => (
@@ -21,7 +21,7 @@ const CustomTable = ({ columns, data, onRowClick }) => {
           </Tr>
         </Thead>
         <Tbody>
-          {data.map((row, rowIndex) => (
+          {data?.map((row, rowIndex) => (
             <Tr
               key={rowIndex}
               onClick={() => onRowClick && onRowClick(row)}

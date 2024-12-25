@@ -29,7 +29,7 @@ const AuthWrapper = ({ leftChildren, rightChildren, background }) => {
           msOverflowStyle: "none",
         }}
       >
-        {leftChildren}{" "}
+        {leftChildren}
       </Box>
       <Box
         w={{ base: "100%", md: "40%" }}
@@ -37,7 +37,7 @@ const AuthWrapper = ({ leftChildren, rightChildren, background }) => {
         display={{ base: "none", md: "block" }}
         bg={background}
       >
-        {rightChildren}{" "}
+        {rightChildren}
       </Box>
     </HStack>
   );

@@ -2,20 +2,20 @@ import React, { useState } from 'react'
 import { useDeleteUserMutation, useGetAllUsersQuery } from './login/loginSlice'
 import { Box, HStack, Icon, IconButton, SimpleGrid, Spacer, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import SearchInput from '../components/custom/search'
-import CustomButton from '../components/custom/button'
 import CustomTable from '../components/custom/table'
 import { FaAd, FaBookReader, FaEdit, FaPen, FaPenAlt, FaPersonBooth, FaPlus, FaTrash, FaUserPlus } from 'react-icons/fa'
-import { formatDate } from '../components/custom/dateFormat'
 import CountBox from '../components/custom/countBox'
 import Badge from '../components/custom/badge'
-import UserAdd from '../components/userAdd'
 import { ErrorToast, LoadingToast, SuccessToast } from '../components/toaster'
+import UserForm from '../components/userForm'
 
 const Dashbord = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [currentUser, setCurrentUser] = useState(null); // Track the user being edited
+  const [formMode, setFormMode] = useState(null); // Track the user being edited
   const { data: users, isFetching, isLoading, isError } = useGetAllUsersQuery()
-  const [deleteUser]= useDeleteUserMutation()
+  const [deleteUser] = useDeleteUserMutation()
   const handleSearch = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
   }
@@ -31,28 +31,28 @@ const Dashbord = () => {
       header: 'Actions',
       // accessor: '_id',
       Cell: ({ row }) => {
-        return ( 
-        <HStack spacing={2}>
-          <IconButton
-            icon={<FaEdit />}
-            size="sm"
-            colorScheme="blue"
-            onClick={() => handleEdit(row._id)}
-          />
-          <IconButton
-            icon={<FaTrash />}
-            size="sm"
-            colorScheme="red"
-            onClick={() => handleDelete(row._id)}
-            aria-label="Delete user"
+        return (
+          <HStack spacing={2}>
+            <IconButton
+              icon={<FaEdit />}
+              size="sm"
+              colorScheme="blue"
+              onClick={() => handleEdit(row)}
+            />
+            <IconButton
+              icon={<FaTrash />}
+              size="sm"
+              colorScheme="red"
+              onClick={() => handleDelete(row._id)}
+              aria-label="Delete user"
 
-          />
-        </HStack>
-     )
-    },
+            />
+          </HStack>
+        )
+      },
     },
   ];
-  
+
 
 
   const filteredData = users?.filter((row) => columns.some((col) => {
@@ -65,22 +65,29 @@ const Dashbord = () => {
   const teacherCount = users ? users.filter((user) => user.role === "teacher").length : 0
   const adminCount = users ? users.filter((user) => user.role === "admin").length : 0
 
-const handleEdit =() =>{
-alert(edited, "edited")
-};
-const handleDelete = async(userId) =>{
-LoadingToast(true)
-try {
-  const response = await deleteUser(userId).unwrap()
-  SuccessToast(response.message)
-  LoadingToast(false)
-} catch (error) {
-  ErrorToast("failed to delete a user")
-  
-}finally{
-  LoadingToast(false)
-}
-}
+  const handleEdit = (user) => {
+    setCurrentUser(user)
+    setFormMode("edit")
+  onOpen()
+  };
+  const handleAdd = () => {
+    setCurrentUser("")
+    setFormMode("add")
+  onOpen()
+  }; 
+  const handleDelete = async (userId) => {
+    LoadingToast(true)
+    try {
+      const response = await deleteUser(userId).unwrap()
+      SuccessToast(response.message)
+      LoadingToast(false)
+    } catch (error) {
+      ErrorToast("failed to delete a user")
+
+    } finally {
+      LoadingToast(false)
+    }
+  }
   return (
     <Box>
       <SimpleGrid mt={{ base: "2%", md: "2%" }}
@@ -121,22 +128,23 @@ try {
       <Box mt={{ base: "5%", md: "1%" }}>
         <HStack >
           <SearchInput value={searchTerm} placeholder={"search student..."} onChange={handleSearch} />
-          <Spacer/>
+          <Spacer />
           {/* <CustomButton onClick={onOpen} leftIcon={<FaUserPlus />} title={"Add user"} bgColor={"blue.400"} /> */}
-          <IconButton onClick={onOpen} borderRadius={"50%"} bg={"blue.400"} icon={<FaPlus/>} size={{base:"sm",md:"md"}}/>
+          <IconButton  onClick={handleAdd} borderRadius={"50%"} bg={"blue.400"} icon={<FaPlus />} size={{ base: "sm", md: "md" }} />
         </HStack>
         {isLoading ? (
           <p>Loading...
           </p>
         ) : isError ? (
-          <Text mt={{base:"2%"}} fontWeight={"bold"} alignSelf={"center"}  color={"red.500"}> {"Oops something went wrong check your internet connection and try again .... "}</Text>
+          <Text mt={{ base: "2%" }} fontWeight={"bold"} alignSelf={"center"} color={"red.500"}> {"Oops something went wrong check your internet connection and try again .... "}</Text>
         ) : (
           <CustomTable
             columns={columns}
             data={filteredData}
+            
           />
         )}
-        <UserAdd isOpen={isOpen} onClose={onClose} />
+        <UserForm isOpen={isOpen} onClose={onClose} userData={currentUser} mode={formMode} />
       </Box>
     </Box>
   )
