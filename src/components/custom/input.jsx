@@ -5,7 +5,7 @@ const CustomInputs = ({ label, value, placeholder, fontSize, icon: IconComponent
   const { colorMode } = useColorMode();
 
   return (
-    <FormControl color={colorMode === "light" ? "black" : "gray.100"}>
+    <FormControl fontSize={{base:"10px"}} color={colorMode === "light" ? "black" : "gray.100"}>
       {label && <FormLabel mt={"1%"} fontSize={fontSize}>{label}</FormLabel>}
       <InputGroup>
         {IconComponent && (

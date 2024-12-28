@@ -4,7 +4,7 @@ import { ErrorToast, SuccessToast } from "./toaster";
 import CustomInputs from "./custom/input";
 import { useAddUserMutation, useUpdateUserMutation } from "../pages/login/loginSlice";
 
-const UserForm = ({ isOpen, onClose, userData, mode   }) => {
+const UserForm = ({ isOpen, onClose, userData, mode }) => {
   const { colorMode } = useColorMode();
   const [formData, setFormData] = useState({
     name: "",
@@ -22,7 +22,7 @@ const UserForm = ({ isOpen, onClose, userData, mode   }) => {
   useEffect(() => {
     if (userData && mode === "edit") {
       setFormData(userData);
-    } else if(mode === "add"){
+    } else if (mode === "add") {
       setFormData({
         name: "",
         email: "",
@@ -33,7 +33,7 @@ const UserForm = ({ isOpen, onClose, userData, mode   }) => {
         gender: "",
       });
     }
-  }, [userData,mode]);
+  }, [userData, mode]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -120,6 +120,7 @@ const UserForm = ({ isOpen, onClose, userData, mode   }) => {
                 onChange={handleChange}
                 type="text"
               />
+              <Text fontWeight={"bold"} alignSelf={"self-start"}>Select role</Text>
               <Select
                 h="50px"
                 value={formData.role}
@@ -149,25 +150,25 @@ const UserForm = ({ isOpen, onClose, userData, mode   }) => {
                   </Stack>
                 </RadioGroup>
               </Box>
-              { mode === "add" &&    <Button
+              {mode === "add" && <Button
                 type="submit"
                 colorScheme="blue"
                 isLoading={isAdding || isUpdating}
                 loadingText={mode === "add" ? "Adding..." : "Updating..."}
                 w="full"
               >
-                Add User 
+                Add User
               </Button>}
-              { mode === "edit" &&    <Button
+              {mode === "edit" && <Button
                 type="submit"
                 colorScheme="blue"
-                isLoading={ isUpdating}
-                loadingText= "Updating..."
+                isLoading={isUpdating}
+                loadingText="Updating..."
                 w="full"
               >
-              update user
+                update user
               </Button>}
-           
+
             </VStack>
           </Box>
         </ModalBody>

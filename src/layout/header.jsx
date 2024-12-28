@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Text, Box, Button, Avatar, HStack, AvatarBadge, IconButton, useColorMode, useTheme, VStack } from '@chakra-ui/react'
+import { Text, Box, Button, Avatar, HStack, AvatarBadge, IconButton, useColorMode, useTheme, VStack, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react'
 import { CloseIcon, HamburgerIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from './Sidebar'
@@ -7,7 +7,7 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { colorMode, toggleColorMode } = useColorMode()
   const isDark = colorMode === 'dark';
-const user = JSON.parse(localStorage.getItem('user'))
+  const user = JSON.parse(localStorage.getItem('user'))
   const navigate = useNavigate()
   const theme = useTheme()
   const textStyles = {
@@ -34,6 +34,7 @@ const user = JSON.parse(localStorage.getItem('user'))
   }
 
   const handleLogout = () => {
+    localStorage.clear()
     navigate('/')
   }
 
@@ -59,29 +60,41 @@ const user = JSON.parse(localStorage.getItem('user'))
         />
         <Box sx={textStyles} onClick={handleLogout}>
           <Text sx={sStyles}>S</Text>
-          <Text fontSize={{base:"9px",md:"18px"}}>chool</Text>
+          <Text fontSize={{ base: "9px", md: "18px" }}>chool</Text>
           <Text sx={sStyles}>M</Text>
-          <Text fontSize={{base:"9px",md:"18px"}}>anagement</Text>
+          <Text fontSize={{ base: "9px", md: "18px" }}>anagement</Text>
         </Box>
         <HStack>
-          <Avatar size={{ base: "sm",md:"md" }} name={user.name} objectFit='cover' bg={theme.colors.accent.light}>
+          <Avatar size={{ base: "sm", md: "md" }} name={user.name} objectFit='cover' bg={theme.colors.accent.light}>
             <AvatarBadge bg='teal' boxSize={{ base: "10px", md: '1.2em' }} />
           </Avatar>
 
-          <VStack display={{base:"none",md:"block"}}  >
-            <Text fontSize={{base:"12px",md:"18px"}}>{user.email}</Text>
-            <Text textTransform={"capitalize"} alignSelf={"flex-start"}>{user.role}</Text>
+          <VStack display={{ base: "none", md: "block" }}  >
+
+            <Menu>
+              <MenuButton as={Text}>
+                <Text fontSize={{ base: "12px", md: "18px" }}>{user.email}</Text>
+                <Text textTransform={"capitalize"} alignSelf={"flex-start"}>{user.role}</Text>
+
+              </MenuButton>
+              <MenuList>
+                <MenuItem>New File</MenuItem>
+                <MenuItem onClick={handleLogout}>Log Out</MenuItem>
+                <MenuItem>Open...</MenuItem>
+                <MenuItem>Save File</MenuItem>
+              </MenuList>
+            </Menu>
 
           </VStack>
           <IconButton
-                 aria-label='Toggle color mode'
-                 icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-                 onClick={toggleColorMode}
-                 w={{base:'40px'}}
-                 h={{base:"40px"}}
-                 bg={"none"}
-                 color={textStyles.color}
-              />
+            aria-label='Toggle color mode'
+            icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+            onClick={toggleColorMode}
+            w={{ base: '40px' }}
+            h={{ base: "40px" }}
+            bg={"none"}
+            color={textStyles.color}
+          />
         </HStack>
       </Box>
       <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />

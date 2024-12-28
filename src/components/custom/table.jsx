@@ -30,7 +30,7 @@ const CustomTable = ({ columns, data, onRowClick }) => {
               {columns.map((col, colIndex) => (
                 <Td textTransform={"capitalize"} key={colIndex}>
                   {col.Cell ? col.Cell ({row}):
-                  row[col.accessor]}</Td>
+                  row[col.accessor] || "-"} </Td>
               ))}
             </Tr>
           ))}
