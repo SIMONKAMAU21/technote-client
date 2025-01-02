@@ -12,7 +12,7 @@ import {
 const CustomTable = ({ columns, data, onRowClick }) => {
   return (
     <TableContainer>
-      <Table variant="simple" colorScheme="blue">
+      <Table size={{base:"sm",md:"lg"}} variant="simple" colorScheme="blue">
         <Thead>
           <Tr>
             {columns.map((col, index) => (

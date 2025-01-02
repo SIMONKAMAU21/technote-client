@@ -58,16 +58,26 @@ const Header = () => {
           color={'white'}
           onClick={() => setIsOpen(!isOpen)}
         />
-        <Box sx={textStyles} onClick={handleLogout}>
+        <Box sx={textStyles}>
           <Text sx={sStyles}>S</Text>
           <Text fontSize={{ base: "9px", md: "18px" }}>chool</Text>
           <Text sx={sStyles}>M</Text>
           <Text fontSize={{ base: "9px", md: "18px" }}>anagement</Text>
         </Box>
         <HStack>
-          <Avatar size={{ base: "sm", md: "md" }} name={user.name} objectFit='cover' bg={theme.colors.accent.light}>
-            <AvatarBadge bg='teal' boxSize={{ base: "10px", md: '1.2em' }} />
-          </Avatar>
+          <Menu size={{base:"md"}}>
+            <MenuButton as={Text}>
+              <Avatar size={{ base: "sm", md: "md" }} name={user.name} objectFit='cover' bg={theme.colors.accent.light}>
+                <AvatarBadge bg='teal' boxSize={{ base: "10px", md: '1.2em' }} />
+              </Avatar>
+            </MenuButton>
+            <MenuList size={{base:"sm"}}>
+              <MenuItem>New File</MenuItem>
+              <MenuItem onClick={handleLogout}>Log Out</MenuItem>
+              <MenuItem>Open...</MenuItem>
+              <MenuItem>Save File</MenuItem>
+            </MenuList>
+          </Menu>
 
           <VStack display={{ base: "none", md: "block" }}  >
 

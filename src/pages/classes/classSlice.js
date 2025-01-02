@@ -3,9 +3,7 @@ const API = import.meta.env.VITE_DOMAIN
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 const classes = JSON.parse(localStorage.getItem('user'))
-console.log('user', classes)
 const token = classes?.token
-console.log('token', token)
 export const ClassApi = createApi({
     reducerPath: "Class",
     tagTypes: ['classes'],

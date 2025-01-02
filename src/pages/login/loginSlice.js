@@ -3,9 +3,7 @@ const API = import.meta.env.VITE_DOMAIN
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 const users = JSON.parse(localStorage.getItem('user'))
-console.log('user', users)
 const token = users?.token
-console.log('token', token)
 export const LoginApi = createApi({
     reducerPath: "Login",
     tagTypes: ['users'],

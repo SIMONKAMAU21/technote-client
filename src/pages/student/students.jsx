@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { useGetAllStudentsQuery } from "./studentSlice";
+import { useDeleteStudentMutation, useGetAllStudentsQuery } from "./studentSlice";
 import CustomTable from "../../components/custom/table";
 import SearchInput from "../../components/custom/search";
-import { Box, HStack, IconButton, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, HStack, IconButton, Skeleton, Stack, Text, useDisclosure } from "@chakra-ui/react";
 import { formatDate } from "../../components/custom/dateFormat";
 import CustomButton from "../../components/custom/button";
 import { FaEdit, FaTrash, FaUserPlus } from "react-icons/fa";
 import StudentAdd from "../../components/studentAdd";
+import { ErrorToast, LoadingToast, SuccessToast } from "../../components/toaster";
 
 const Students = () => {
   const { data, error, isLoading } = useGetAllStudentsQuery();
   const [searchTerm, setSearchTerm] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure()
-
+const [deleteStudent] = useDeleteStudentMutation()
 
   // Define columns for the table
   const columns = [
@@ -24,6 +25,8 @@ const Students = () => {
     { header: "Enrollment Date", accessor: "enrollmentDate" },
     {
       header: "Actions",
+      accessor:"_id",
+
       Cell: ({ row }) => {
         console.log('row', row)
 
@@ -46,10 +49,7 @@ const Students = () => {
           </HStack>
         )
       }
-
-
     },
-
   ];
 
   // Parse data for nested properties (e.g., "classId.name")
@@ -78,9 +78,19 @@ const Students = () => {
   const handleSearch = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
   }
-  const handleDelete = () => {
-
-  }
+  const handleDelete = async (userId) => {
+      LoadingToast(true)
+      try {
+        const response = await deleteStudent(userId).unwrap()
+        SuccessToast(response.message)
+        LoadingToast(false)
+      } catch (error) {
+        ErrorToast("failed to delete a user")
+  
+      } finally {
+        LoadingToast(false)
+      }
+    }
   return (
     <Box>
       <HStack>
@@ -88,14 +98,19 @@ const Students = () => {
         <CustomButton onClick={onOpen} leftIcon={<FaUserPlus />} title={"Add Student"} bgColor={"blue.400"} />
       </HStack>
       {isLoading ? (
-        <p>Loading...</p>
+        <Stack mt={{base:"2%",md:"2%"}}>
+       <Skeleton h={"20px"}/>
+       <Skeleton h={"20px"}/>
+       <Skeleton h={"20px"}/>
+       <Skeleton h={"20px"}/>
+
+        </Stack>
       ) : error ? (
         <Text mt={{ base: "2%" }} fontWeight={"bold"} alignSelf={"center"} color={"red.500"}> {"Oops something went wrong check your internet connection and try again .... "}</Text>
       ) : (
         <CustomTable
           columns={columns}
           data={filteredData}
-          onRowClick={(row) => alert(`Student ID: ${row["_id"]}`)}
         />
       )}
       <StudentAdd isOpen={isOpen} onClose={onClose} />

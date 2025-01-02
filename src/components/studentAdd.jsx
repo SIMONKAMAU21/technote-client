@@ -43,6 +43,7 @@ const StudentAdd = ({ isOpen, onClose }) => {
         address: "",
         enrollmentDate: "",
       });
+      onClose()
     } catch (error) {
       const errorMessage = error?.data?.message || "An error occurred. Please try again.";
       ErrorToast(errorMessage);

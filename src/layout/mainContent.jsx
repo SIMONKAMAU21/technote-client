@@ -24,10 +24,6 @@ const Maincontent = () => {
         <Route path='/teachers' element={<Teachers/>}/>
         <Route path='/settings' element={<Settings/>}/>
         <Route path='/classes' element={<Classes/>}/>
-
-
-
-
       </Routes>
       </Box>
       </HStack>
