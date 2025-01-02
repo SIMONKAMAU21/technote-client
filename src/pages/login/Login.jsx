@@ -46,7 +46,8 @@ const Login = () => {
           ErrorToast("unknown role. please contact your admin")
       }
     } catch (error) {
-      ErrorToast(`failed to login + ${error}`)
+      const errorMessage = error?.data?.message || "An error occurred. Please try again.";
+      ErrorToast(errorMessage)
     } finally {
       LoadingToast(false)
     }

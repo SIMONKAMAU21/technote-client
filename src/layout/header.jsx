@@ -23,7 +23,9 @@ const Header = () => {
     },
 
   }
-
+if(!user){
+navigate('/')
+}
   const sStyles = {
     color: theme.colors.accent.light,
     fontWeight: '900',
@@ -67,7 +69,7 @@ const Header = () => {
         <HStack>
           <Menu size={{base:"md"}}>
             <MenuButton as={Text}>
-              <Avatar size={{ base: "sm", md: "md" }} name={user.name} objectFit='cover' bg={theme.colors.accent.light}>
+              <Avatar size={{ base: "sm", md: "md" }} name={user?.name} objectFit='cover' bg={theme.colors.accent.light}>
                 <AvatarBadge bg='teal' boxSize={{ base: "10px", md: '1.2em' }} />
               </Avatar>
             </MenuButton>
@@ -83,8 +85,8 @@ const Header = () => {
 
             <Menu>
               <MenuButton as={Text}>
-                <Text fontSize={{ base: "12px", md: "18px" }}>{user.email}</Text>
-                <Text textTransform={"capitalize"} alignSelf={"flex-start"}>{user.role}</Text>
+                <Text fontSize={{ base: "12px", md: "18px" }}>{user?.email}</Text>
+                <Text textTransform={"capitalize"} alignSelf={"flex-start"}>{user?.role}</Text>
 
               </MenuButton>
               <MenuList>

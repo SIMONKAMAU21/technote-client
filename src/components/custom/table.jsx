@@ -15,7 +15,7 @@ const CustomTable = ({ columns, data, onRowClick }) => {
       <Table size={{base:"sm",md:"lg"}} variant="simple" colorScheme="blue">
         <Thead>
           <Tr>
-            {columns.map((col, index) => (
+            {columns?.map((col, index) => (
               <Th key={index}>{col.header}</Th>
             ))}
           </Tr>

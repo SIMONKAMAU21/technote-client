@@ -5,7 +5,6 @@ const AuthWrapper = ({ leftChildren, rightChildren, background }) => {
 
   return (
     <HStack
-      // bg={background}
       h={"100%"}
       w={"100%"}
       spacing={"0"}
@@ -18,9 +17,6 @@ const AuthWrapper = ({ leftChildren, rightChildren, background }) => {
         w={{ base: "100%", md: "60%" }}
         h={"100%"}
         overflow={"scroll"}
-        // bg={"#131619"}
-        // bg={colorMode === 'light' ? theme.colors.primary.light : theme.colors.primary.dark}
-
         sx={{
           "::-webkit-scrollbar": {
             display: "none",

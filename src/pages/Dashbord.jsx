@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useDeleteUserMutation, useGetAllUsersQuery } from './login/loginSlice'
-import { Box, HStack, Icon, IconButton, SimpleGrid, Spacer, Text, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, HStack, Icon, IconButton, SimpleGrid, Skeleton, Spacer, Stack, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import SearchInput from '../components/custom/search'
 import CustomTable from '../components/custom/table'
 import { FaAd, FaBookReader, FaEdit, FaPen, FaPenAlt, FaPersonBooth, FaPlus, FaTrash, FaUserPlus } from 'react-icons/fa'
@@ -8,6 +8,10 @@ import CountBox from '../components/custom/countBox'
 import Badge from '../components/custom/badge'
 import { ErrorToast, LoadingToast, SuccessToast } from '../components/toaster'
 import UserForm from '../components/userForm'
+import { Bar, Line, Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, LineElement, PointElement } from "chart.js";
+import useChartOptions from '../components/custom/chart'
+ChartJS.register(ArcElement, Tooltip, Legend, LinearScale, BarElement, CategoryScale, PointElement, LineElement);
 
 const Dashbord = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -54,7 +58,6 @@ const Dashbord = () => {
   ];
 
 
-
   const filteredData = users?.filter((row) => columns.some((col) => {
     const cellValue = row[col.accessor]?.toString().toLowerCase()
     return cellValue?.includes(searchTerm)
@@ -64,17 +67,41 @@ const Dashbord = () => {
   const parentCount = users ? users.filter((user) => user.role === "parent").length : 0
   const teacherCount = users ? users.filter((user) => user.role === "teacher").length : 0
   const adminCount = users ? users.filter((user) => user.role === "admin").length : 0
+  const usersCount = users ? users.length : 0
+  const graphData = {
+    labels: ['Students', 'Teachers', 'Parents', 'Admins','Total users'],
+    datasets: [
+      {
+        label: 'User Distribution',
+        data: [studentCount, teacherCount, parentCount, adminCount,usersCount],
+        backgroundColor: ['#4CAF50', '#FF9800', '#2196F3', '#9C27B0',"red"],
+        borderColor: ['#2E7D32', '#F57C00', '#1976D2', '#7B1FA2'], // Optional: Bar borders
+        borderWidth: 1, // Optional: Border thickness
+
+      },
+    ],
+  };
+
+  // const pieData = {
+  //   labels: ['Students', 'Teachers', 'Parents', 'Admins'],
+  //   datasets: [
+  //     {
+  //       data: [studentCount, teacherCount, parentCount, adminCount],
+  //       backgroundColor: ['#4CAF50', '#FF9800', '#2196F3', '#9C27B0'],
+  //     },
+  //   ],
+  // };
 
   const handleEdit = (user) => {
     setCurrentUser(user)
     setFormMode("edit")
-  onOpen()
+    onOpen()
   };
   const handleAdd = () => {
     setCurrentUser("")
     setFormMode("add")
-  onOpen()
-  }; 
+    onOpen()
+  };
   const handleDelete = async (userId) => {
     LoadingToast(true)
     try {
@@ -88,8 +115,11 @@ const Dashbord = () => {
       LoadingToast(false)
     }
   }
+  const chartOptions = useChartOptions
   return (
     <Box>
+      {/* count boxes*/}
+
       <SimpleGrid mt={{ base: "2%", md: "2%" }}
         columns={{ base: 2, md: 4 }}
         spacing={6}
@@ -103,45 +133,49 @@ const Dashbord = () => {
           msOverflowStyle: "none",
         }}>
 
-        <CountBox icon={FaBookReader} count={studentCount} title={"No Of Students"} />
-        <CountBox icon={FaPen} count={teacherCount} title={"No Of Teachers"} />
-        <CountBox icon={FaPersonBooth} count={parentCount} title={"No Of Parents"} />
-        <CountBox icon={FaPenAlt} count={adminCount} title={"No Of Admins"} />
+        <CountBox color={"#4CAF50"} gradient="linear(to-l, #4CAF50,#1c1e22, #1c1e22)"
+          icon={FaBookReader} count={studentCount} title={"No Of Students"} />
+        <CountBox color={"#FF9800"} gradient="linear(to-l, #FF9800,#1c1e22, #1c1e22)" icon={FaPen} count={teacherCount} title={"No Of Teachers"} />
+        <CountBox color={'#2196F3'} gradient="linear(to-l, #2196F3,#1c1e22, #1c1e22)" icon={FaPersonBooth} count={parentCount} title={"No Of Parents"} />
+        <CountBox color={'#9C27B0'} gradient="linear(to-l, #9C27B0,#1c1e22, #1c1e22)" icon={FaPenAlt} count={adminCount} title={"No Of Admins"} />
       </SimpleGrid>
-      <SimpleGrid columns={{ base: 3, md: 4 }}
-        mt={{ base: "1%", md: "1%" }}
-        w={{ md: "30%", base: "80%" }}
-        // spacing={{base:6,md:""}}
-        sx={{
-          "::-webkit-scrollbar": {
-            display: "none",
-          },
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-        }} >
-        <Badge title={"student"} bgColor={"green.500"} />
-        <Badge title={"parents"} bgColor={"red.500"} />
-        <Badge title={"teachers"} bgColor={"blue.500"} />
+      {/* graphs*/}
+      <SimpleGrid columns={{ base: 1, md: 4 }} spacing={3} mt={8}>
+        <Box>
+          <Text fontSize="xl" fontWeight="bold" mb={4}>User Distribution (Bar Chart)</Text>
+          <Bar data={graphData} options={chartOptions} />
+        </Box>
+
+        <Box>
+          <Text fontSize="xl" fontWeight="bold" mb={4}>User Distribution (line Chart)</Text>
+          <Line data={graphData} options={chartOptions} />
+        </Box>
       </SimpleGrid>
 
+      {/* content*/}
 
       <Box mt={{ base: "5%", md: "1%" }}>
         <HStack >
-          <SearchInput value={searchTerm} placeholder={"search student..."} onChange={handleSearch} />
+          <SearchInput value={searchTerm} placeholder={"search user..."} onChange={handleSearch} />
           <Spacer />
           {/* <CustomButton onClick={onOpen} leftIcon={<FaUserPlus />} title={"Add user"} bgColor={"blue.400"} /> */}
-          <IconButton  onClick={handleAdd} borderRadius={"50%"} bg={"blue.400"} icon={<FaPlus />} size={{ base: "sm", md: "md" }} />
+          <IconButton onClick={handleAdd} borderRadius={"50%"} bg={"blue.400"} icon={<FaPlus />} size={{ base: "sm", md: "md" }} />
         </HStack>
         {isLoading ? (
-          <p>Loading...
-          </p>
+          <Stack mt={{ base: "2%", md: "2%" }}>
+            <Skeleton h={"20px"} />
+            <Skeleton h={"20px"} />
+            <Skeleton h={"20px"} />
+            <Skeleton h={"20px"} />
+          </Stack>
+
         ) : isError ? (
-          <Text mt={{ base: "2%" }} fontWeight={"bold"} alignSelf={"center"} color={"red.500"}> {"Oops something went wrong check your internet connection and try again .... "}</Text>
+          <Text mt={{ base: "2%" }} fontWeight={"bold"} alignSelf={"center"} color={"red.500"}> {"Oops something went wrong try agin later... "}</Text>
         ) : (
           <CustomTable
             columns={columns}
             data={filteredData}
-            
+
           />
         )}
         <UserForm isOpen={isOpen} onClose={onClose} userData={currentUser} mode={formMode} />

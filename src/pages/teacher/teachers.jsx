@@ -2,7 +2,7 @@ import React from 'react'
 
 const Teachers = () => {
   return (
-    <div>muiga</div>
+    <div>teachers</div>
   )
 }
 
