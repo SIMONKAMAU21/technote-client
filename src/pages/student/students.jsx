@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDeleteStudentMutation, useGetAllStudentsQuery } from "./studentSlice";
 import CustomTable from "../../components/custom/table";
 import SearchInput from "../../components/custom/search";
-import { Box, HStack, IconButton, Skeleton, Stack, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, HStack, IconButton, Progress, Skeleton, Stack, Text, useDisclosure } from "@chakra-ui/react";
 import { formatDate } from "../../components/custom/dateFormat";
 import CustomButton from "../../components/custom/button";
 import { FaEdit, FaTrash, FaUserPlus } from "react-icons/fa";
@@ -28,7 +28,6 @@ const [deleteStudent] = useDeleteStudentMutation()
       accessor:"_id",
 
       Cell: ({ row }) => {
-        console.log('row', row)
 
         return (
           <HStack spacing={2}>
@@ -98,13 +97,15 @@ const [deleteStudent] = useDeleteStudentMutation()
         <CustomButton onClick={onOpen} leftIcon={<FaUserPlus />} title={"Add Student"} bgColor={"blue.400"} />
       </HStack>
       {isLoading ? (
-        <Stack mt={{base:"2%",md:"2%"}}>
-       <Skeleton h={"20px"}/>
-       <Skeleton h={"20px"}/>
-       <Skeleton h={"20px"}/>
-       <Skeleton h={"20px"}/>
+        <>
+        <Progress size='xs' isIndeterminate />
+        <Stack mt={{ base: "2%", md: "2%" }}>
+          <Skeleton h={"20px"} />
+          <Skeleton h={"20px"} />
+          <Skeleton h={"20px"} />
+          <Skeleton h={"20px"} />
 
-        </Stack>
+        </Stack></>
       ) : error ? (
         <Text mt={{ base: "2%" }} fontWeight={"bold"} alignSelf={"center"} color={"red.500"}> {"Oops something went wrong check your internet connection and try again .... "}</Text>
       ) : (

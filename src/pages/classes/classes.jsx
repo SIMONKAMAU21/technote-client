@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import CustomTable from "../../components/custom/table";
 import SearchInput from "../../components/custom/search";
-import { Box, HStack, IconButton, Skeleton, Stack, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, HStack, IconButton, Skeleton, Spacer, Stack, Text, useDisclosure } from "@chakra-ui/react";
 import { formatDate } from "../../components/custom/dateFormat";
 import CustomButton from "../../components/custom/button";
 import { FaEdit, FaTrash, FaUserPlus } from "react-icons/fa";
-import StudentAdd from "../../components/studentAdd";
 import { ErrorToast, LoadingToast, SuccessToast } from "../../components/toaster";
 import { useDeleteClassMutation, useGetAllclassesQuery } from "./classSlice";
+import ClassAdd from "../../components/classAdd";
 
 const Classes = () => {
 
-
+  const [currentClass, setCurrentClass] = useState(null); // Track the user being edited
+  const [formMode, setFormMode] = useState(null); // Track the user being edited
   const { data, error, isLoading } = useGetAllclassesQuery();
   const [searchTerm, setSearchTerm] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -29,7 +30,6 @@ const Classes = () => {
       accessor: "_id",
 
       Cell: ({ row }) => {
-        console.log('row', row)
 
         return (
           <HStack spacing={2}>
@@ -74,7 +74,11 @@ const Classes = () => {
     const cellValue = row[col.accessor]?.toString().toLowerCase()
     return cellValue?.includes(searchTerm)
   }))
-
+  const handleEdit = (grade) => {
+    setCurrentClass(grade)
+    setFormMode("edit")
+    onOpen()
+  };
   const handleSearch = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
   }
@@ -91,11 +95,16 @@ const Classes = () => {
       LoadingToast(false)
     }
   }
+  const handleAdd = () => {
+    setCurrentClass("")
+    setFormMode("add")
+    onOpen()
+  };
   return (
     <Box>
       <HStack>
         <SearchInput value={searchTerm} placeholder={"search class..."} onChange={handleSearch} />
-        <CustomButton onClick={onOpen} leftIcon={<FaUserPlus />} title={"Add class"} bgColor={"blue.400"} />
+        <CustomButton formMode="add" onClick={handleAdd} leftIcon={<FaUserPlus />} title={"Add class"} bgColor={"blue.400"} />
       </HStack>
       {isLoading ? (
         <Stack mt={{ base: "2%", md: "2%" }}>
@@ -108,12 +117,19 @@ const Classes = () => {
       ) : error ? (
         <Text mt={{ base: "2%" }} fontWeight={"bold"} alignSelf={"center"} color={"red.500"}> {"Oops something went wrong check your internet connection and try again .... "}</Text>
       ) : (
-        <CustomTable
+        <HStack>
+           <CustomTable
           columns={columns}
           data={filteredData}
         />
+          <CustomTable
+          columns={columns}
+          data={filteredData}
+        />
+        </HStack>
+       
       )}
-      {/* <classAdd isOpen={isOpen} onClose={onClose} /> */}
+      <ClassAdd isOpen={isOpen} classData={currentClass} onClose={onClose} mode={formMode}/>
     </Box>
   );
 };

@@ -4,6 +4,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 const classes = JSON.parse(localStorage.getItem('user'))
 const token = classes?.token
+
 export const ClassApi = createApi({
     reducerPath: "Class",
     tagTypes: ['classes'],
@@ -18,13 +19,13 @@ export const ClassApi = createApi({
             providesTags: ['classes']
         }),
         addClass: builder.mutation({
-            query: (user) => ({
+            query: (classes) => ({
                 url: 'class/add',
                 method: "POST",
                 headers: {
                     Authorization: `JWT ${token}`, 
                 },
-                body: user,
+                body: classes,
 
             }),
             invalidatesTags: ['classes']

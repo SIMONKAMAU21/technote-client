@@ -7,11 +7,13 @@ import {
   Th,
   Td,
   TableContainer,
+  useColorMode,
 } from "@chakra-ui/react";
 
 const CustomTable = ({ columns, data, onRowClick }) => {
+  const {colorMode} = useColorMode()
   return (
-    <TableContainer>
+    <TableContainer bgColor={colorMode === "dark" ?"gray.700" :"gray.100"} p={1} borderRadius={"10px"}>
       <Table size={{base:"sm",md:"lg"}} variant="simple" colorScheme="blue">
         <Thead>
           <Tr>

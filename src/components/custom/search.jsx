@@ -11,11 +11,12 @@ import {
     const { colorMode } = useColorMode();
   
     return (
-      <InputGroup w={{base:"80%",md:"40%"}} borderRadius={"full"} bg={colorMode === "light" ? "gray.200" : " none"}>
+      <InputGroup h={"50%"}  w={{base:"80%",md:"40%"}} borderRadius={"full"} bg={colorMode === "light" ? "gray.200" : " none"}>
         <InputLeftElement pointerEvents="none">
           <FaSearch color={colorMode === "dark" ? "gray" : "black"} />
         </InputLeftElement>
         <Input
+        // h={{base:"10%",md:"auto"}}
           color={colorMode === "light" ? "black" : "white"}
           value={value}
           borderRadius={"full"}

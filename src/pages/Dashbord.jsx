@@ -158,7 +158,6 @@ const Dashbord = () => {
         <HStack >
           <SearchInput value={searchTerm} placeholder={"search user..."} onChange={handleSearch} />
           <Spacer />
-          {/* <CustomButton onClick={onOpen} leftIcon={<FaUserPlus />} title={"Add user"} bgColor={"blue.400"} /> */}
           <IconButton onClick={handleAdd} borderRadius={"50%"} bg={"blue.400"} icon={<FaPlus />} size={{ base: "sm", md: "md" }} />
         </HStack>
         {isLoading ? (
@@ -172,11 +171,13 @@ const Dashbord = () => {
         ) : isError ? (
           <Text mt={{ base: "2%" }} fontWeight={"bold"} alignSelf={"center"} color={"red.500"}> {"Oops something went wrong try agin later... "}</Text>
         ) : (
-          <CustomTable
+         <Box mt={{base:2}}>
+           <CustomTable
             columns={columns}
             data={filteredData}
 
           />
+         </Box>
         )}
         <UserForm isOpen={isOpen} onClose={onClose} userData={currentUser} mode={formMode} />
       </Box>

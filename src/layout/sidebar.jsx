@@ -72,10 +72,6 @@ const Sidebar = ({isOpen,setIsOpen}) => {
     }
   };
 
-  // React.useEffect(() => {
-  //   setIsOpen(false);
-  // }, [location]);
-
   return (
     <>
    
