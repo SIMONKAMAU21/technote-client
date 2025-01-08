@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Text, Box, Button, Avatar, HStack, AvatarBadge, IconButton, useColorMode, useTheme, VStack, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react'
 import { CloseIcon, HamburgerIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom'
-import Sidebar from './Sidebar'
+import Sidebar from './sidebar'
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { colorMode, toggleColorMode } = useColorMode()

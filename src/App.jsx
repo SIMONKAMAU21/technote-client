@@ -1,10 +1,10 @@
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
-import Maincontent from './layout/Maincontent'
 import { Box } from '@chakra-ui/react'
 import Login from './pages/login/Login'
 import { ToasterContainer } from './components/toaster'
+import Maincontent from './layout/Maincontent'
 
 function App() {
 
@@ -15,7 +15,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path='/' element={<Login />} />
-            <Route path='/*' element={<Maincontent />} />
+            <Route path='/*' element={<Maincontent/>} />
           </Routes>
         </BrowserRouter>
       </Box>
