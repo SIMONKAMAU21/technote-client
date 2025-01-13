@@ -44,10 +44,12 @@ export const LoginApi = createApi({
         }),
         updateUser:builder.mutation({
             query:(user)=>({
-                url:`users/${user.id}`,
+                url:`user/${user.id}`,
                 method:"PUT",
                 body:user
-            })
+            }),
+            invalidatesTags:["users"]
+
         })
 
     })

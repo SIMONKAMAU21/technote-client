@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, Radio, RadioGroup, Select, Stack, Text, useColorMode, VStack } from "@chakra-ui/react";
+import { Box, Button, HStack, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, Radio, RadioGroup, Select, Stack, Text, useColorMode, VStack } from "@chakra-ui/react";
 import { ErrorToast, SuccessToast } from "./toaster";
 import CustomInputs from "./custom/input";
 import { useAddUserMutation, useUpdateUserMutation } from "../pages/login/loginSlice";
@@ -60,7 +60,6 @@ const UserForm = ({ isOpen, onClose, userData, mode }) => {
       } else if (mode === "edit") {
         const id = userData._id
         const response = await updateUser({ id: userData._id, ...formData }).unwrap();
-        console.log('response', id)
         SuccessToast(response.message);
       }
       setFormData({
@@ -84,15 +83,17 @@ const UserForm = ({ isOpen, onClose, userData, mode }) => {
       <ModalContent w={{ base: "90%", md: "100%" }}>
         <ModalHeader>{mode === "add" ? "Add User" : "Edit User"}</ModalHeader>
         <ModalBody>
-          <Box as="form" onSubmit={handleSubmit} w="full" p={4}>
+          <Box as="form" onSubmit={handleSubmit} w="full" p={2}>
             <VStack spacing={4}>
-              <CustomInputs
+            <HStack>
+            <CustomInputs
                 label="Full Name"
                 name="name"
                 placeholder="Enter Full Name"
                 value={formData.name}
                 onChange={handleChange}
                 type="text"
+                width={"100%"}
               />
               <CustomInputs
                 label="Email"
@@ -102,7 +103,9 @@ const UserForm = ({ isOpen, onClose, userData, mode }) => {
                 onChange={handleChange}
                 type="email"
               />
-              {mode === "add" && (
+            </HStack>
+           <HStack>
+           {mode === "add" && (
                 <CustomInputs
                   label="Password"
                   name="password"
@@ -120,19 +123,11 @@ const UserForm = ({ isOpen, onClose, userData, mode }) => {
                 onChange={handleChange}
                 type="text"
               />
-              <Text fontWeight={"bold"} alignSelf={"self-start"}>Select role</Text>
-              <Select
-                h="50px"
-                value={formData.role}
-                onChange={handleRoleChange}
-                placeholder="Select Role"
-              >
-                <option value="admin">Admin</option>
-                <option value="student">Student</option>
-                <option value="teacher">Teacher</option>
-                <option value="parent">Parent</option>
-              </Select>
-              <CustomInputs
+           </HStack>
+           
+             
+             <HStack>
+             <CustomInputs
                 label="Phone"
                 name="phone"
                 placeholder="Enter Phone Number"
@@ -150,6 +145,19 @@ const UserForm = ({ isOpen, onClose, userData, mode }) => {
                   </Stack>
                 </RadioGroup>
               </Box>
+             </HStack>
+             <Text fontWeight={"bold"} alignSelf={"self-start"}>Select role</Text>
+              <Select
+                h="50px"
+                value={formData.role}
+                onChange={handleRoleChange}
+                placeholder="Select Role"
+              >
+                <option value="admin">Admin</option>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+                <option value="parent">Parent</option>
+              </Select>
               {mode === "add" && <Button
                 type="submit"
                 colorScheme="blue"

@@ -50,9 +50,12 @@ const ClassAdd = ({ isOpen, onClose, classData, mode }) => {
 
                 });
                 onClose()
-            } else if (mpde === "edit") {
+            } else if (mode === "edit") {
                 const id = classData._id
-                const response = await updateClass({})
+                const response = await updateClass({ id, ...formData }).unwrap()
+                SuccessToast(response.message);
+                onClose()
+
             }
 
         } catch (error) {
@@ -71,7 +74,7 @@ const ClassAdd = ({ isOpen, onClose, classData, mode }) => {
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
-            <ModalContent fontSize={{ base: "15px", md: "18px" }} w={{ base: "90%", md: "100%" }}>
+            <ModalContent fontSize={{ base: "15px", md: "15px" }} w={{ base: "90%", md: "100%" }}>
                 <ModalHeader>{mode === "add" ? "Add class" : " Edit class"}</ModalHeader>
                 <ModalBody >
                     <Box onSubmit={handleSubmit} w="full" p={4}>
@@ -95,7 +98,7 @@ const ClassAdd = ({ isOpen, onClose, classData, mode }) => {
                                 name="name"
                                 value={formData.name}
                                 placeholder={"Enter class name..."}
-                                fontSize={{ base: "15px", md: "18px" }}
+                                fontSize={{ base: "15px", md: "15px" }}
                                 onChange={handleChange}
                                 type="text"
                             />

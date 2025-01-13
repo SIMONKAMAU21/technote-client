@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { Box, Button, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, Select, Text, VStack } from "@chakra-ui/react";
-import { useAddStudentMutation } from "../pages/student/studentSlice";
+import React, { useEffect, useState } from "react";
+import { Box, Button, HStack, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, Select, Text, VStack } from "@chakra-ui/react";
+import { useAddStudentMutation, useUpdateStudentMutation } from "../pages/student/studentSlice";
 import { ErrorToast, LoadingToast, SuccessToast } from "./toaster";
 import CustomInputs from "./custom/input";
 import { useGetAllUsersQuery } from "../pages/login/loginSlice";
 import { useGetAllclassesQuery } from "../pages/classes/classSlice";
 
-const StudentAdd = ({ isOpen, onClose }) => {
+const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
   const [formData, setFormData] = useState({
     userId: "",
     classId: "",
@@ -19,6 +19,9 @@ const StudentAdd = ({ isOpen, onClose }) => {
   const [addStudent, { isLoading }] = useAddStudentMutation();
   const { data: users, isFetching, isError } = useGetAllUsersQuery()
   const { data: classes } = useGetAllclassesQuery()
+  const [ updateStudent ] = useUpdateStudentMutation()
+
+
   const handleRoleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -28,12 +31,72 @@ const StudentAdd = ({ isOpen, onClose }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+
+  
+  useEffect(() => {
+    if (studentData && mode === "edit") {
+      setFormData({
+        userId: studentData.userId?.name || "",
+        classId: studentData.classId?.name || "",
+        parentId: studentData.parentId?._id || "",
+        dob: studentData.dob
+          ? formatDateToYYYYMMDD(studentData.dob) // Safely format the date
+          : "",
+        address: studentData.address || "",
+        enrollmentDate: studentData.enrollmentDate
+          ? formatDateToYYYYMMDD(studentData.enrollmentDate) // Safely format the date
+          : "",
+      });
+    } else if (mode === "add") {
+      setFormData({
+        userId: "",
+        classId: "",
+        parentId: "",
+        dob: "",
+        address: "",
+        enrollmentDate: "",
+      });
+    }
+  }, [studentData, mode]);
+  
+  // Utility function to safely format a date
+  const formatDateToYYYYMMDD = (date) => {
+    try {
+      return new Date(date).toISOString().split("T")[0]; // Convert to YYYY-MM-DD
+    } catch {
+      return ""; // Return an empty string if the date is invalid
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     LoadingToast(true)
     try {
-   const response = await addStudent(formData).unwrap();
-      SuccessToast(response.message);
+      if (mode === "add") {
+        const response = await addStudent(formData).unwrap();
+        console.log('response', response)
+        SuccessToast(response.message);
+        LoadingToast(false)
+        setFormData({
+          userId: "",
+          classId: "",
+          parentId: "",
+          dob: "",
+          address: "",
+          enrollmentDate: "",
+        });
+        onClose()
+      } else if (mode === "edit") {
+        const id = studentData._id
+        const response = await updateStudent({ id, ...formData })
+        SuccessToast(response.data.message)
+        onClose()
+      }
+
+    } catch (error) {
+      console.log(error)
+      const errorMessage = error?.data?.message || "An error occurred. Please try again.";
+      ErrorToast(errorMessage);
       LoadingToast(false)
       setFormData({
         userId: "",
@@ -43,71 +106,79 @@ const StudentAdd = ({ isOpen, onClose }) => {
         address: "",
         enrollmentDate: "",
       });
-      onClose()
-    } catch (error) {
-      const errorMessage = error?.data?.message || "An error occurred. Please try again.";
-      ErrorToast(errorMessage);
-      LoadingToast(false)
-    }finally{
+    } finally {
       LoadingToast(false)
     }
   };
   const students = users?.filter(student => student.role === "student") || []
   const parents = users?.filter(parent => parent.role === "parent") || []
+  
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent fontSize={{ base: "15px", md: "18px" }} w={{ base: "90%", md: "100%" }}>
-        <ModalHeader>Add Student</ModalHeader>
+        <ModalHeader>{mode === "add" ? " Add Student" : "Edit Student"}</ModalHeader>
         <ModalBody >
           <Box as="form" onSubmit={handleSubmit} w="full" p={4}>
             <VStack spacing={4}>
-              <Text fontWeight={"bold"} alignSelf={"self-start"}>Student Name</Text>
-              <Select
-                h="50px"
-                name="userId"
-                value={formData.userId}
-                onChange={handleRoleChange}
-                textTransform={"capitalize"}
-                placeholder="select Student name"
-              >{students && students?.map((student) => (
-                <option key={student._id} value={student._id}>{student.name}</option>
+               {mode === "add" ?
+             <>
+             <HStack>
+             <VStack>
+               <Text fontWeight={"bold"} alignSelf={"self-start"}>Student Name</Text>
+               <Select
+                 h="50px"
+                 name="userId"
+                 value={formData.userId}
+                 onChange={handleRoleChange}
+                 textTransform="capitalize"
+                 placeholder="Select Student Name"
+               >
+                 {students?.map((student) => (
+                   <option key={student._id} value={student._id}>
+                     {student.name}
+                   </option>
+                 ))}
+               </Select>
 
-              ))}
-              </Select>
+             </VStack> 
 
+             <VStack>
               <Text fontWeight={"bold"} alignSelf={"self-start"}>Class  Name</Text>
               <Select
                 h="50px"
-                value={formData.classId}
                 name="classId"
-                textTransform={"capitalize"}
+                value={formData.classId}
                 onChange={handleRoleChange}
-                placeholder="select Class name"
+                textTransform="capitalize"
+                placeholder="Select Class Name"
               >
-                {classes && classes?.map((grade) => (
-                  <option key={grade._id} value={grade._id}>{grade.name}</option>
-
+                {classes?.map((grade) => (
+                  <option key={grade._id} value={grade._id}>
+                    {grade.name}
+                  </option>
                 ))}
               </Select>
 
-              <Text fontWeight={"bold"} alignSelf={"self-start"}>Parent Name</Text>
+            </VStack>
+             </HStack>
+    
+            <Text fontWeight={"bold"} alignSelf={"self-start"}>Parent Name</Text>
               <Select
                 h="50px"
-                textTransform={"capitalize"}
-                value={formData.parentId}
                 name="parentId"
+                value={formData.parentId}
                 onChange={handleRoleChange}
-                placeholder="select Parent Name"
+                textTransform="capitalize"
+                placeholder="Select Parent Name"
               >
-                {parents && parents?.map((parent) => (
-                  <option key={parent._id} value={parent._id}>{parent.name}</option>
-
+                {parents?.map((parent) => (
+                  <option key={parent._id} value={parent._id}>
+                    {parent.name}
+                  </option>
                 ))}
-
               </Select>
-
               <CustomInputs
                 label="Date of Birth"
                 name="dob"
@@ -136,14 +207,74 @@ const StudentAdd = ({ isOpen, onClose }) => {
                 onChange={handleChange}
                 type="date"
               />
+            </>
+              :  <>
+               
+          <HStack>
+          <VStack>
+              <Text fontWeight={"bold"} alignSelf={"self-start"}>Parent Name</Text>
+              <Select
+                h="50px"
+                name="parentId"
+                value={formData.parentId}
+                onChange={handleRoleChange}
+                textTransform="capitalize"
+                placeholder="Select Parent Name"
+              >
+                {parents?.map((parent) => (
+                  <option key={parent._id} value={parent._id}>
+                    {parent.name}
+                  </option>
+                ))}
+              </Select>
+              </VStack>
+              <VStack>
+              <Text fontWeight={"bold"} alignSelf={"self-start"}>Class  Name</Text>
+              <Select
+                h="50px"
+                name="classId"
+                value={formData.classId}
+                onChange={handleRoleChange}
+                textTransform="capitalize"
+                placeholder="Select Class Name"
+              >
+                {classes?.map((grade) => (
+                  <option key={grade._id} value={grade._id}>
+                    {grade.name}
+                  </option>
+                ))}
+              </Select>
+
+            </VStack>
+          </HStack>
+              
+
+            
+            <CustomInputs
+                label="Enrollment Date"
+                name="enrollmentDate"
+                placeholder="Select Enrollment Date"
+                fontSize={{ base: "15px", md: "18px" }}
+                value={formData.enrollmentDate}
+                onChange={handleChange}
+                type="date"
+              />
+              </>}
+
+               
+              {/* </HStack> */}
+
+
+
+            
               <Button
                 type="submit"
                 colorScheme="blue"
                 isLoading={isLoading}
-                loadingText="Adding"
+                loadingText={mode === "add" ? "Adding..." : " Updating...."}
                 w="full"
               >
-                Add Student
+                {mode === "add" ? "Add Student" : "Save"}
               </Button>
             </VStack>
           </Box>

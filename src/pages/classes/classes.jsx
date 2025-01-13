@@ -79,9 +79,12 @@ const Classes = () => {
     setFormMode("edit")
     onOpen()
   };
+  // for serching
   const handleSearch = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
   }
+
+  // for deleting
   const handleDelete = async (classId) => {
     LoadingToast(true)
     try {
@@ -117,15 +120,12 @@ const Classes = () => {
       ) : error ? (
         <Text mt={{ base: "2%" }} fontWeight={"bold"} alignSelf={"center"} color={"red.500"}> {"Oops something went wrong check your internet connection and try again .... "}</Text>
       ) : (
-        <HStack>
+        <HStack mt={2}>
            <CustomTable
           columns={columns}
           data={filteredData}
         />
-          <CustomTable
-          columns={columns}
-          data={filteredData}
-        />
+        
         </HStack>
        
       )}

@@ -34,7 +34,7 @@ const CountBox = ({ icon, count, title, gradient, clickMe, color }) => {
             "whiteAlpha.800"
           }
           fontWeight={{ base: "bold", md: "bold" }}
-          fontSize={{ base: "10px", md: "lg" }}
+          fontSize={{ base: "10px", md: "12px" }}
         >
           {title}
         </Text>

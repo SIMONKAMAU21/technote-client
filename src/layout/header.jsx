@@ -10,6 +10,7 @@ const Header = () => {
   const user = JSON.parse(localStorage.getItem('user'))
   const navigate = useNavigate()
   const theme = useTheme()
+  
   const textStyles = {
     color: "white",
     fontWeight: "600",
@@ -62,9 +63,9 @@ navigate('/')
         />
         <Box sx={textStyles}>
           <Text sx={sStyles}>S</Text>
-          <Text fontSize={{ base: "9px", md: "18px" }}>chool</Text>
+          <Text fontSize={{ base: "9px", md: "12px" }}>chool</Text>
           <Text sx={sStyles}>M</Text>
-          <Text fontSize={{ base: "9px", md: "18px" }}>anagement</Text>
+          <Text fontSize={{ base: "9px", md: "12px" }}>anagement</Text>
         </Box>
         <HStack>
           <Menu size={{base:"md"}}>
@@ -85,8 +86,8 @@ navigate('/')
 
             <Menu>
               <MenuButton as={Text}>
-                <Text fontSize={{ base: "12px", md: "18px" }}>{user?.email}</Text>
-                <Text textTransform={"capitalize"} alignSelf={"flex-start"}>{user?.role}</Text>
+                <Text fontSize={{ base: "12px", md: "12px" }}>{user?.email}</Text>
+                <Text fontSize={{ base: "12px", md: "12px" }} textTransform={"capitalize"} alignSelf={"flex-start"}>{user?.role}</Text>
 
               </MenuButton>
               <MenuList>

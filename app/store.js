@@ -3,18 +3,22 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import { LoginApi } from "../src/pages/login/loginSlice";
 import { StudentApi } from "../src/pages/student/studentSlice";
 import { ClassApi } from "../src/pages/classes/classSlice";
+import { SubjectApi } from "../src/pages/teacher/teacherSlice";
 
 export const store = configureStore({
     reducer:{
 [LoginApi.reducerPath]:LoginApi.reducer,
 [StudentApi.reducerPath]:StudentApi.reducer,
-[ClassApi.reducerPath]: ClassApi.reducer
+[ClassApi.reducerPath]: ClassApi.reducer,
+[SubjectApi.reducerPath]: SubjectApi.reducer
+
     },
     middleware:(getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
             LoginApi.middleware,
             StudentApi.middleware,
-            ClassApi.middleware
+            ClassApi.middleware,
+            SubjectApi.middleware
         )
 })
 

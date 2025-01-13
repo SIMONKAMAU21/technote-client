@@ -38,11 +38,13 @@ export const ClassApi = createApi({
             invalidatesTags:["classes"]
         }),
         updateClass:builder.mutation({
-            query:(user)=>({
-                url:`classes/${user.id}`,
+            query:(unit)=>({
+                url:`class/${unit.id}`,
                 method:"PUT",
-                body:user
-            })
+                body:unit
+            }),
+            invalidatesTags: ['classes']
+
         })
 
     })

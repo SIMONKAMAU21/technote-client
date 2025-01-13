@@ -10,10 +10,13 @@ import StudentAdd from "../../components/studentAdd";
 import { ErrorToast, LoadingToast, SuccessToast } from "../../components/toaster";
 
 const Students = () => {
+
+  const [currentStudent, setCurrentStudent] = useState(null); // Track the user being edited
+  const [formMode, setFormMode] = useState(null); // Track the user being edited
   const { data, error, isLoading } = useGetAllStudentsQuery();
   const [searchTerm, setSearchTerm] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure()
-const [deleteStudent] = useDeleteStudentMutation()
+  const [deleteStudent] = useDeleteStudentMutation()
 
   // Define columns for the table
   const columns = [
@@ -25,10 +28,9 @@ const [deleteStudent] = useDeleteStudentMutation()
     { header: "Enrollment Date", accessor: "enrollmentDate" },
     {
       header: "Actions",
-      accessor:"_id",
+      accessor: "_id",
 
       Cell: ({ row }) => {
-
         return (
           <HStack spacing={2}>
             <IconButton
@@ -50,6 +52,13 @@ const [deleteStudent] = useDeleteStudentMutation()
       }
     },
   ];
+
+
+  const handleEdit = (student) => {
+    setCurrentStudent(student)
+    setFormMode("edit")
+    onOpen()
+  };
 
   // Parse data for nested properties (e.g., "classId.name")
   const parseNestedData = (row, accessor) =>
@@ -78,43 +87,52 @@ const [deleteStudent] = useDeleteStudentMutation()
     setSearchTerm(e.target.value.toLowerCase());
   }
   const handleDelete = async (userId) => {
-      LoadingToast(true)
-      try {
-        const response = await deleteStudent(userId).unwrap()
-        SuccessToast(response.message)
-        LoadingToast(false)
-      } catch (error) {
-        ErrorToast("failed to delete a user")
-  
-      } finally {
-        LoadingToast(false)
-      }
+    LoadingToast(true)
+    try {
+      const response = await deleteStudent(userId).unwrap()
+      console.log('response', response)
+      SuccessToast(response.message)
+      LoadingToast(false)
+    } catch (error) {
+      ErrorToast("failed to delete a user")
+
+    } finally {
+      LoadingToast(false)
     }
+  }
+
+  const handleAdd = () => {
+    setCurrentStudent("")
+    setFormMode("add")
+    onOpen()
+  }
   return (
     <Box>
       <HStack>
         <SearchInput value={searchTerm} placeholder={"search student..."} onChange={handleSearch} />
-        <CustomButton onClick={onOpen} leftIcon={<FaUserPlus />} title={"Add Student"} bgColor={"blue.400"} />
+        <CustomButton onClick={handleAdd} leftIcon={<FaUserPlus />} formMode="add" title={"Add Student"} bgColor={"blue.400"} />
       </HStack>
       {isLoading ? (
         <>
-        <Progress size='xs' isIndeterminate />
-        <Stack mt={{ base: "2%", md: "2%" }}>
-          <Skeleton h={"20px"} />
-          <Skeleton h={"20px"} />
-          <Skeleton h={"20px"} />
-          <Skeleton h={"20px"} />
+          <Progress size='xs' isIndeterminate />
+          <Stack mt={{ base: "2%", md: "2%" }}>
+            <Skeleton h={"20px"} />
+            <Skeleton h={"20px"} />
+            <Skeleton h={"20px"} />
+            <Skeleton h={"20px"} />
 
-        </Stack></>
+          </Stack></>
       ) : error ? (
         <Text mt={{ base: "2%" }} fontWeight={"bold"} alignSelf={"center"} color={"red.500"}> {"Oops something went wrong check your internet connection and try again .... "}</Text>
       ) : (
-        <CustomTable
-          columns={columns}
-          data={filteredData}
-        />
+        <Box mt={2}>
+          <CustomTable
+            columns={columns}
+            data={filteredData}
+          />
+        </Box>
       )}
-      <StudentAdd isOpen={isOpen} onClose={onClose} />
+      <StudentAdd isOpen={isOpen} onClose={onClose} mode={formMode} studentData={currentStudent} />
     </Box>
   );
 };
