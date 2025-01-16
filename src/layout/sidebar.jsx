@@ -20,7 +20,6 @@ const Sidebar = ({isOpen,setIsOpen}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
-  // const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const displayMode = useBreakpointValue({ base: 'none', md: 'block' });
   const sidebarWidth = useBreakpointValue({ base: '70%', md: '20%' });
@@ -32,6 +31,7 @@ const Sidebar = ({isOpen,setIsOpen}) => {
     height: '100vh',
     marginTop: '60px',
     width: sidebarWidth,
+    fontSize:"14px",
     padding: '10px',
     boxShadow: isDark ? '5px 5px 10px rgba(4,4,4,0.25)' : '5px 5px 10px rgba(0,0,0,0.25)',
     backgroundColor: isDark ? 'gray.800' : 'white',

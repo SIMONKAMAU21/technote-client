@@ -105,7 +105,7 @@ const UserForm = ({ isOpen, onClose, userData, mode }) => {
               />
             </HStack>
            <HStack>
-           {mode === "add" && (
+       
                 <CustomInputs
                   label="Password"
                   name="password"
@@ -114,7 +114,7 @@ const UserForm = ({ isOpen, onClose, userData, mode }) => {
                   onChange={handleChange}
                   type="password"
                 />
-              )}
+          
               <CustomInputs
                 label="Address"
                 name="address"
@@ -141,7 +141,7 @@ const UserForm = ({ isOpen, onClose, userData, mode }) => {
                   <Stack direction="row">
                     <Radio value="Male">Male</Radio>
                     <Radio value="Female">Female</Radio>
-                    <Radio value="Other">Other</Radio>
+                    <Radio value="Other">Other </Radio>
                   </Stack>
                 </RadioGroup>
               </Box>

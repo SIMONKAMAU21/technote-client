@@ -68,6 +68,7 @@ const Dashbord = () => {
   const teacherCount = users ? users.filter((user) => user.role === "teacher").length : 0
   const adminCount = users ? users.filter((user) => user.role === "admin").length : 0
   const usersCount = users ? users.length : 0
+  
   const graphData = {
     labels: ['Students', 'Teachers', 'Parents', 'Admins','Total users'],
     datasets: [
