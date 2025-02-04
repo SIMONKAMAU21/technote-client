@@ -1,29 +1,30 @@
-import { 
-  Box, 
-  HStack, 
-  List, 
-  ListItem, 
-  Icon, 
-  Input, 
-  InputGroup, 
-  InputRightElement, 
-  IconButton, 
-  useColorMode, 
-  useBreakpointValue 
+import {
+  Box,
+  HStack,
+  List,
+  ListItem,
+  Icon,
+  Input,
+  InputGroup,
+  InputRightElement,
+  IconButton,
+  useColorMode,
+  useBreakpointValue,
+  VStack
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { SearchIcon, HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { FaHome, FaUserGraduate, FaChalkboardTeacher, FaBook, FaCog } from 'react-icons/fa';
 
-const Sidebar = ({isOpen,setIsOpen}) => {
+const Sidebar = ({ isOpen, setIsOpen }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
   const location = useLocation();
   const displayMode = useBreakpointValue({ base: 'none', md: 'block' });
-  const sidebarWidth = useBreakpointValue({ base: '70%', md: '20%' });
-  
+  const sidebarWidth = useBreakpointValue({ base: '70%', md: '15%' });
+
   const navigationStyles = {
     position: 'fixed',
     top: 0,
@@ -31,13 +32,13 @@ const Sidebar = ({isOpen,setIsOpen}) => {
     height: '100vh',
     marginTop: '60px',
     width: sidebarWidth,
-    fontSize:"14px",
+    fontSize: "14px",
     padding: '10px',
     boxShadow: isDark ? '5px 5px 10px rgba(4,4,4,0.25)' : '5px 5px 10px rgba(0,0,0,0.25)',
     backgroundColor: isDark ? 'gray.800' : 'white',
     color: isDark ? 'white' : 'black',
     zIndex: 500,
-    // flexDirection: 'column',
+    flexDirection: 'column',
     justifyContent: 'space-between',
   };
 
@@ -74,49 +75,51 @@ const Sidebar = ({isOpen,setIsOpen}) => {
 
   return (
     <>
-   
-      <Box sx={{ ...navigationStyles, display: isOpen ? 'block' : displayMode }}>
-        <Box>
-          <List>
-            {filterItems.length === 0 && (
-              <Box display="flex" flexDirection='column' alignItems="center" h='80vh' justifyContent='center'>
-                <Box mb={2} textAlign="center">
-                  NO RESULTS FOUND <SearchIcon boxSize={6} />
-                </Box>
-              </Box>
-            )}
 
-            {filterItems.map((item) => (
-              <ListItem key={item.to}>
-                <NavLink
-                  to={item.to}
-                  style={({ isActive }) => isActive ? { ...linkStyles, ...activeLinkStyles } : linkStyles}
-                  onClick={handleLinkClick}
-                >
-                  <HStack spacing={2}>
-                    <Icon as={item.icon} />
-                    <Box>{item.label}</Box>
-                  </HStack>
-                </NavLink>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-        <Box>
-          <InputGroup>
-            <InputRightElement>
-              <SearchIcon />
-            </InputRightElement>
-            <Input
-              placeholder='Type here to search...'
-              value={searchQuery}
-              type='search'
-              onChange={(e) => setSearchQuery(e.target.value)}
-              aria-label='Search navigation items'
-            />
-          </InputGroup>
-        </Box>
-      </Box>
+      {/* <Box sx={{ ...navigationStyles, display: isOpen ? 'block' : displayMode }}> */}
+        <VStack sx={{ ...navigationStyles, display: isOpen ? 'block' : displayMode }} justifyContent={"space-between"} >
+          <Box>
+            <List>
+              {filterItems.length === 0 && (
+                <Box display="flex" flexDirection='column' alignItems="center" h='80vh' justifyContent='center'>
+                  <Box mb={2} textAlign="center">
+                    NO RESULTS FOUND <SearchIcon boxSize={6} />
+                  </Box>
+                </Box>
+              )}
+
+              {filterItems.map((item) => (
+                <ListItem key={item.to}>
+                  <NavLink
+                    to={item.to}
+                    style={({ isActive }) => isActive ? { ...linkStyles, ...activeLinkStyles } : linkStyles}
+                    onClick={handleLinkClick}
+                  >
+                    <HStack spacing={2}>
+                      <Icon as={item.icon} />
+                      <Box>{item.label}</Box>
+                    </HStack>
+                  </NavLink>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+          <Box>
+            <InputGroup>
+              <InputRightElement>
+                <SearchIcon />
+              </InputRightElement>
+              <Input
+                placeholder='Type here to search...'
+                value={searchQuery}
+                type='search'
+                onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label='Search navigation items'
+              />
+            </InputGroup>
+          </Box>
+        </VStack>
+      {/* </Box> */}
     </>
   );
 };

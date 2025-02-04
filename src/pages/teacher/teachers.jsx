@@ -5,9 +5,9 @@ import { Box, HStack, IconButton, Progress, Skeleton, Stack, Text, useDisclosure
 import { formatDate } from "../../components/custom/dateFormat";
 import CustomButton from "../../components/custom/button";
 import { FaEdit, FaTrash, FaUserPlus } from "react-icons/fa";
-// import subjectAdd from "../../components/subjectAdd";
 import { ErrorToast, LoadingToast, SuccessToast } from "../../components/toaster";
 import { useDeletesubjectMutation, useGetAllsubjectsQuery } from "./teacherSlice";
+import Subjectadd from "../../components/subjectAdd";
 
 
 const Teachers = () => {
@@ -130,7 +130,7 @@ const Teachers = () => {
           />
         </Box>
       )}
-      <subjectAdd isOpen={isOpen} onClose={onClose} mode={formMode} subjectData={currentsubject} />
+      <Subjectadd isOpen={isOpen} onClose={onClose} mode={formMode} subjectData={currentsubject} />
     </Box>
   );
 };
