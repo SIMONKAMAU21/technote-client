@@ -1,8 +1,12 @@
+import { Box } from '@chakra-ui/react'
 import React from 'react'
+import BigCallender from '../../components/bigCallender'
 
 const Settings = () => {
   return (
-    <div>Settings</div>
+    <Box>
+      <BigCallender height={800} />
+    </Box>
   )
 }
 

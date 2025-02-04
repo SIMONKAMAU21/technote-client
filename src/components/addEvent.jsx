@@ -20,13 +20,13 @@ const AddEvent = ({ onClose, isOpen, mode, eventData }) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-console.log('eventData', eventData)
+    console.log('eventData', eventData)
     useEffect(() => {
         if (eventData && mode === "edit") {
             setFormData({
                 title: eventData.title || "",
-                start: eventData.start ? new Date (eventData.start).toISOString().slice(0,16) : "",
-                end: eventData.end ? new Date (eventData.end).toISOString().slice(0,16) : "",
+                start: eventData.start ? new Date(eventData.start).toISOString().slice(0, 16) : "",
+                end: eventData.end ? new Date(eventData.end).toISOString().slice(0, 16) : "",
 
             });
         } else if (mode === "add") {
@@ -55,7 +55,8 @@ console.log('eventData', eventData)
                 });
                 onClose()
             } else if (mode === "edit") {
-                const id = classData._id
+                const id = eventData.id
+                console.log('id', id)
                 const response = await updateEvent({ id, ...formData }).unwrap()
                 SuccessToast(response.message);
                 onClose()
@@ -79,7 +80,19 @@ console.log('eventData', eventData)
         <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent fontSize={{ base: "15px", md: "15px" }} w={{ base: "90%", md: "100%" }}>
-                <ModalHeader>{mode === 'add' ? "Add event" : "Edit event"}</ModalHeader>
+                <ModalHeader>{mode === 'add' ? "Add event" : "Edit event"}
+                    <Box>
+                        <Text color={"#ed8936"} fontSize={"12px"}>
+                            Created by: {eventData?.creator}
+                        </Text>
+                        <Text color={"#ed8936"} fontSize={"12px"}>
+                            Role: 
+                                {eventData?.role}
+                            
+                        </Text>
+                    </Box>
+
+                </ModalHeader>
                 <ModalBody >
                     <Box onSubmit={handleSubmit} w="full" p={4}>
                         <VStack as={"form"} spacing={4}>

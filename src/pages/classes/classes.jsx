@@ -8,6 +8,7 @@ import { FaEdit, FaTrash, FaUserPlus } from "react-icons/fa";
 import { ErrorToast, LoadingToast, SuccessToast } from "../../components/toaster";
 import { useDeleteClassMutation, useGetAllclassesQuery } from "./classSlice";
 import ClassAdd from "../../components/classAdd";
+import BigCallender from "../../components/bigCallender";
 
 const Classes = () => {
 
@@ -125,7 +126,7 @@ const Classes = () => {
           columns={columns}
           data={filteredData}
         />
-        
+        <BigCallender/>
         </HStack>
        
       )}

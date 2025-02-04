@@ -43,7 +43,10 @@ export const eventApi = createApi({
             query:(event)=>({
                 url:`event/${event.id}`,
                 method:"PUT",
-                body:event
+                body:event,
+                headers:{
+                    Authorization:`JWT ${token}`
+                }
             }),
             invalidatesTags:["events"]
 
