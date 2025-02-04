@@ -1,13 +1,42 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>school management system</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>school management system</title>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+  <!-- <script>
+    const notify = () => {
+      new Notification("Hello Here")
+    }
+
+    if ("Notification" in window) {
+      console.log("am i sending");
+      if (Notification.permission === 'granted') {
+        notify();
+      }
+      else {
+        Notification.requestPermission().then(() => {
+          if (res === 'granted') {
+            notify()
+          }
+          else if (res == 'denied') {
+            console.log("Notifications access denied");
+          }
+          else if (res == 'default') {
+            console.log("Notifications permissions not given");
+          }
+        })
+      }
+    }
+
+  </script> -->
+</body>
+
 </html>

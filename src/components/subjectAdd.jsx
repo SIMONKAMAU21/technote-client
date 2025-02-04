@@ -30,11 +30,11 @@ const Subjectadd = ({ isOpen, onClose, mode, subjectData }) => {
                 classId: subjectData.classId?.name || "",
                 parentId: subjectData.parentId?._id || "",
                 dob: subjectData.dob
-                    ? formatDateToYYYYMMDD(subjectData.dob) // Safely format the date
+                    ? new Date(subjectData.dob).toISOString().slice(0,16) // Safely format the date
                     : "",
                 address: subjectData.address || "",
                 enrollmentDate: subjectData.enrollmentDate
-                    ? formatDateToYYYYMMDD(subjectData.enrollmentDate) // Safely format the date
+                    ? new Date(subjectData.enrollmentDate).toISOString().slice(0,16) // Safely format the date
                     : "",
             });
         } else if (mode === "add") {

@@ -14,12 +14,18 @@ export const LoginApi = createApi({
                 url: `users/login`,
                 method: "POST",
                 body: login,
+                headers: {
+                    Authorization: `JWT ${token}`, 
+                },
             })
         }),
         getAllUsers: builder.query({
             query: () => ({
                 url: "users",
-                method: "GET"
+                method: "GET",
+                  headers: {
+                    Authorization: `JWT ${token}`, 
+                },
             }),
             providesTags: ['users']
         }),
