@@ -48,7 +48,7 @@ const BigCallender = ({ height, width }) => {
 
 
   return (
-    <Box flex={1} h={height} fontSize={{ base: "8px", md: "12px" }} overflow={"scroll"}>
+    <Box flex={1} h={height} w={"100%"} fontSize={{ base: "8px", md: "12px" }} >
       <Box fontSize={{ base: "8px", md: "11px" }}>
         <HStack p={{ base: 1, md: 3 }} justifyContent={"space-between"} w={"100%"}>
           <CustomButton onClick={handleAdd} leftIcon={<FaPlus />} bgColor={"blue.300"} title={" Event"} />
@@ -79,7 +79,7 @@ const BigCallender = ({ height, width }) => {
           event: ({ event }) => (
             <Box >
               <Text fontWeight={"bold"}>
-                created by {event.creator} {event.role}
+                created by {event.creator} ({event.role})
               </Text>
               <Text aria-label="A Text">
                 {event.title}

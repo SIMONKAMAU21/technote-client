@@ -5,7 +5,7 @@ import BigCallender from '../../components/bigCallender'
 const Settings = () => {
   return (
     <Box>
-      <BigCallender height={800} />
+      <BigCallender height={800}  />
     </Box>
   )
 }

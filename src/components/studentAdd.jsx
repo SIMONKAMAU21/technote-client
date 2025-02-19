@@ -124,12 +124,13 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
             <VStack spacing={4}>
                {mode === "add" ?
              <>
-             <HStack>
-             <VStack>
+             <HStack w={"full"}>
+             <VStack flex={1}>
                <Text fontWeight={"bold"} alignSelf={"self-start"}>Student Name</Text>
                <Select
                  h="50px"
                  name="userId"
+                 fontSize={"12px"}
                  value={formData.userId}
                  onChange={handleRoleChange}
                  textTransform="capitalize"
@@ -144,11 +145,13 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
 
              </VStack> 
 
-             <VStack>
+             <VStack flex={1}>
               <Text fontWeight={"bold"} alignSelf={"self-start"}>Class  Name</Text>
               <Select
                 h="50px"
                 name="classId"
+                fontSize={"12px"}
+
                 value={formData.classId}
                 onChange={handleRoleChange}
                 textTransform="capitalize"
@@ -168,6 +171,8 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
               <Select
                 h="50px"
                 name="parentId"
+                fontSize={"12px"}
+
                 value={formData.parentId}
                 onChange={handleRoleChange}
                 textTransform="capitalize"
@@ -216,6 +221,8 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
               <Select
                 h="50px"
                 name="parentId"
+                fontSize={"12px"}
+
                 value={formData.parentId}
                 onChange={handleRoleChange}
                 textTransform="capitalize"
@@ -233,6 +240,8 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
               <Select
                 h="50px"
                 name="classId"
+                fontSize={"12px"}
+
                 value={formData.classId}
                 onChange={handleRoleChange}
                 textTransform="capitalize"

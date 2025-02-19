@@ -71,7 +71,7 @@ navigate('/')
           <Menu size={{base:"md"}}>
             <MenuButton as={Text}>
               <Avatar size={{ base: "sm", md: "md" }} name={user?.name} objectFit='cover' bg={theme.colors.accent.light}>
-                <AvatarBadge bg='teal' boxSize={{ base: "10px", md: '1.2em' }} />
+                <AvatarBadge bg='green' boxSize={{ base: "10px", md: '1.2em' }} />
               </Avatar>
             </MenuButton>
             <MenuList size={{base:"sm"}}>
@@ -85,7 +85,7 @@ navigate('/')
           <VStack display={{ base: "none", md: "block" }}  >
 
             <Menu>
-              <MenuButton as={Text}>
+              <MenuButton color={"white"} as={Text}>
                 <Text fontSize={{ base: "12px", md: "12px" }}>{user?.email}</Text>
                 <Text fontSize={{ base: "12px", md: "12px" }} textTransform={"capitalize"} alignSelf={"flex-start"}>{user?.role}</Text>
 
