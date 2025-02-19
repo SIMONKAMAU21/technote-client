@@ -11,7 +11,6 @@ import UserForm from '../components/userForm'
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, LineElement, PointElement } from "chart.js";
 import useChartOptions from '../components/custom/chart'
-import BigCallender from '../components/bigCallender'
 ChartJS.register(ArcElement, Tooltip, Legend, LinearScale, BarElement, CategoryScale, PointElement, LineElement);
 
 const Dashbord = () => {
@@ -143,7 +142,7 @@ const Dashbord = () => {
         <CountBox color={'#9C27B0'} gradient="linear(to-l, #9C27B0,#1c1e22, #1c1e22)" icon={FaPenAlt} count={adminCount} title={"No Of Admins"} />
       </SimpleGrid>
       {/* graphs*/}
-      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6} mt={8}>
+      <SimpleGrid size={"sm"} columns={{ base: 1, md: 3 }} spacing={6} mt={8}>
         <Box>
           <Text fontSize="xl" fontWeight="bold" mb={4}>User Distribution (Bar Chart)</Text>
           <Bar data={graphData} options={chartOptions} />
@@ -153,9 +152,10 @@ const Dashbord = () => {
           <Text fontSize="xl" fontWeight="bold" mb={4}>User Distribution (line Chart)</Text>
           <Line data={graphData} options={chartOptions} />
         </Box>
-        <Box >
-        <BigCallender height={250} width={700}/>
-        </Box>
+        {/* <Box size={"sm"}>
+          <Text fontSize="sm" fontWeight="bold" mb={4}>User Distribution (Pie Chart)</Text>
+          <Pie data={pieData} options={chartOptions} />
+        </Box> */}
       </SimpleGrid>
 
       {/* content*/}

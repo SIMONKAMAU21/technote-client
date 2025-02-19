@@ -64,7 +64,8 @@ const BigCallender = ({ height, width }) => {
               <option value={"teacher"}>Teacher</option>
               <option value={"parent"}>parent</option>
 
-            </Select></>
+            </Select>
+            </>
         </HStack>
       </Box>
       <Calendar

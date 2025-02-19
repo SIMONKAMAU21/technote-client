@@ -121,13 +121,10 @@ const Classes = () => {
       ) : error ? (
         <Text mt={{ base: "2%" }} fontWeight={"bold"} alignSelf={"center"} color={"red.500"}> {"Oops something went wrong check your internet connection and try again .... "}</Text>
       ) : (
-        <HStack mt={2}>
            <CustomTable
           columns={columns}
           data={filteredData}
         />
-        <BigCallender/>
-        </HStack>
        
       )}
       <ClassAdd isOpen={isOpen} classData={currentClass} onClose={onClose} mode={formMode}/>
