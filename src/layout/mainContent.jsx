@@ -1,5 +1,5 @@
 import React from 'react'
-import Header from './Header'
+import Header from './header'
 import { Route, Routes } from 'react-router-dom'
 import { Box, HStack, useBreakpointValue } from '@chakra-ui/react'
 import Dashbord from '../pages/Dashbord'
