@@ -29,14 +29,9 @@ const CustomTable = ({ columns, data, onRowClick }) => {
   const startIndex = (currentPage - 1) * rowsPerPage;
   const currentRows = data?.slice(startIndex, startIndex + rowsPerPage);
 
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setCurrentPage(newPage);
-    }
-  };
   const handleInputChange = (e) => {
     const value = Number(e.target.value);
-    
+
     // Ensure the value is within valid range
     if (value >= 1 && value <= totalPages) {
       setCurrentPage(value);
@@ -45,20 +40,22 @@ const CustomTable = ({ columns, data, onRowClick }) => {
   return (
     <>
       <HStack justify={"space-between"} mb={"3"}>
-      <HStack justifyContent={"space-between"}>
-      <Button
-        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-        isDisabled={currentPage === 1}
-        >
-          <ChevronLeftIcon />
-        </Button>
-        <Button
-        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-        isDisabled={currentPage === totalPages}
-        >
-          <ChevronRightIcon />
-        </Button>
-      </HStack>
+        <HStack justifyContent={"space-between"}>
+          <Button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            isDisabled={currentPage === 1}
+          >
+            <ChevronLeftIcon />
+          </Button>
+          <Button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            isDisabled={currentPage === totalPages}
+          >
+            <ChevronRightIcon />
+          </Button>
+        </HStack>
         <HStack>
           <CustomInputs
             type={"number"}
@@ -69,13 +66,8 @@ const CustomTable = ({ columns, data, onRowClick }) => {
             height={"20px"}
             width={"60px"}
           />
-          <Text>
-            /
-          {totalPages}
-            </Text>
-
+          <Text>/{totalPages}</Text>
         </HStack>
-      
         <Select
           fontSize={"12px"}
           placeholder=""

@@ -1,9 +1,15 @@
-import { Box, Heading, HStack, Icon, Text, useColorMode, VStack } from "@chakra-ui/react";
-import { backIn } from "framer-motion";
+import {
+  Box,
+  HStack,
+  Icon,
+  Text,
+  useColorMode,
+  VStack,
+} from "@chakra-ui/react";
 import React from "react";
 
 const CountBox = ({ icon, count, title, gradient, clickMe, color }) => {
-  const { colorMode } = useColorMode()
+  const { colorMode } = useColorMode();
   return (
     <Box
       bgGradient={gradient}
@@ -20,19 +26,17 @@ const CountBox = ({ icon, count, title, gradient, clickMe, color }) => {
     >
       <VStack align="start">
         <HStack>
-          <Icon
-            as={icon}
-            boxSize={{ base: 6, md: 8 }}
-            color={color}
-          />
-          <Text color={
-            "whiteAlpha.800"
-          } fontWeight={"bold"} fontSize={{ base: "10px", md: "18px" }}>{count}</Text>
+          <Icon as={icon} boxSize={{ base: 6, md: 8 }} color={color} />
+          <Text
+            color={"whiteAlpha.800"}
+            fontWeight={"bold"}
+            fontSize={{ base: "10px", md: "18px" }}
+          >
+            {count}
+          </Text>
         </HStack>
         <Text
-          color={
-            "whiteAlpha.800"
-          }
+          color={"whiteAlpha.800"}
           fontWeight={{ base: "bold", md: "bold" }}
           fontSize={{ base: "10px", md: "12px" }}
         >
