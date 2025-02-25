@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+const API = import.meta.env.VITE_DOMAIN
 
 export const SubjectApi = createApi({
     reducerPath: "subject",
     tagTypes: ['subjects'],
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://technotes-1w0k.onrender.com/api/' }),
+    baseQuery: fetchBaseQuery({ baseUrl: API }),
     endpoints: (builder) => ({
         getAllsubjects: builder.query({
             query: () => ({

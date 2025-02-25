@@ -32,9 +32,10 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
   };
 
 
-  
+  const isEditing = !!studentData
+
   useEffect(() => {
-    if (studentData && mode === "edit") {
+    if (studentData && isEditing) {
       setFormData({
         userId: studentData.userId?.name || "",
         classId: studentData.classId?.name || "",
@@ -47,7 +48,7 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
           ? formatDateToYYYYMMDD(studentData.enrollmentDate) // Safely format the date
           : "",
       });
-    } else if (mode === "add") {
+    } else if ( !isEditing) {
       setFormData({
         userId: "",
         classId: "",
@@ -72,7 +73,7 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
     e.preventDefault();
     LoadingToast(true)
     try {
-      if (mode === "add") {
+      if (!isEditing) {
         const response = await addStudent(formData).unwrap();
         console.log('response', response)
         SuccessToast(response.message);
@@ -86,7 +87,7 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
           enrollmentDate: "",
         });
         onClose()
-      } else if (mode === "edit") {
+      } else if (isEditing) {
         const id = studentData._id
         const response = await updateStudent({ id, ...formData })
         SuccessToast(response.data.message)
@@ -118,18 +119,19 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent fontSize={{ base: "15px", md: "18px" }} w={{ base: "90%", md: "100%" }}>
-        <ModalHeader>{mode === "add" ? " Add Student" : "Edit Student"}</ModalHeader>
+        <ModalHeader>{!isEditing ? " Add Student" : "Edit Student"}</ModalHeader>
         <ModalBody >
           <Box as="form" onSubmit={handleSubmit} w="full" p={4}>
             <VStack spacing={4}>
-               {mode === "add" ?
+               {!isEditing ?
              <>
-             <HStack>
-             <VStack>
+             <HStack w={"full"}>
+             <VStack flex={1}>
                <Text fontWeight={"bold"} alignSelf={"self-start"}>Student Name</Text>
                <Select
                  h="50px"
                  name="userId"
+                 fontSize={"12px"}
                  value={formData.userId}
                  onChange={handleRoleChange}
                  textTransform="capitalize"
@@ -144,11 +146,13 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
 
              </VStack> 
 
-             <VStack>
+             <VStack flex={1}>
               <Text fontWeight={"bold"} alignSelf={"self-start"}>Class  Name</Text>
               <Select
                 h="50px"
                 name="classId"
+                fontSize={"12px"}
+
                 value={formData.classId}
                 onChange={handleRoleChange}
                 textTransform="capitalize"
@@ -168,6 +172,8 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
               <Select
                 h="50px"
                 name="parentId"
+                fontSize={"12px"}
+
                 value={formData.parentId}
                 onChange={handleRoleChange}
                 textTransform="capitalize"
@@ -216,6 +222,8 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
               <Select
                 h="50px"
                 name="parentId"
+                fontSize={"12px"}
+
                 value={formData.parentId}
                 onChange={handleRoleChange}
                 textTransform="capitalize"
@@ -233,6 +241,8 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
               <Select
                 h="50px"
                 name="classId"
+                fontSize={"12px"}
+
                 value={formData.classId}
                 onChange={handleRoleChange}
                 textTransform="capitalize"
@@ -271,10 +281,10 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
                 type="submit"
                 colorScheme="blue"
                 isLoading={isLoading}
-                loadingText={mode === "add" ? "Adding..." : " Updating...."}
+                loadingText={isEditing ? "Adding..." : " Updating...."}
                 w="full"
               >
-                {mode === "add" ? "Add Student" : "Save"}
+                {isEditing? "Add Student" : "Save"}
               </Button>
             </VStack>
           </Box>

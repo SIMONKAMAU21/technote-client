@@ -9,7 +9,7 @@ import Settings from '../pages/setting/settings'
 import Classes from '../pages/classes/classes'
 
 const Maincontent = () => {
-  const marginLeft = useBreakpointValue({ base: "0", md: "20%" });
+  const marginLeft = useBreakpointValue({ base: "0", md: "15%" });
 
   return (
   <>

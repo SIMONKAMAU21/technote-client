@@ -126,7 +126,6 @@ const UserForm = ({ isOpen, onClose, userData, mode }) => {
            </HStack>
            
              
-             <HStack>
              <CustomInputs
                 label="Phone"
                 name="phone"
@@ -145,7 +144,6 @@ const UserForm = ({ isOpen, onClose, userData, mode }) => {
                   </Stack>
                 </RadioGroup>
               </Box>
-             </HStack>
              <Text fontWeight={"bold"} alignSelf={"self-start"}>Select role</Text>
               <Select
                 h="50px"

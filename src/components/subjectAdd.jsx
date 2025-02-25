@@ -145,7 +145,7 @@ const Subjectadd = ({ isOpen, onClose, mode, subjectData }) => {
                                     </HStack>
 
                                     <Text fontWeight={"bold"} alignSelf={"self-start"}>Parent Name</Text>
-                                    <Select
+                                    {/* <Select
                                         h="50px"
                                         name="parentId"
                                         // value={formData.parentId}
@@ -158,7 +158,7 @@ const Subjectadd = ({ isOpen, onClose, mode, subjectData }) => {
                                                 {parent.name}
                                             </option>
                                         ))}
-                                    </Select>
+                                    </Select> */}
                                     <CustomInputs
                                         label="Date of Birth"
                                         name="dob"

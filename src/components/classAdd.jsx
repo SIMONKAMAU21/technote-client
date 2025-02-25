@@ -83,6 +83,7 @@ const ClassAdd = ({ isOpen, onClose, classData, mode }) => {
                             <Select
                                 h="50px"
                                 name="teacherId"
+                                fontSize={"12px"}
                                 value={formData.teacherId}
                                 onChange={handleChange}
                                 textTransform={"capitalize"}
