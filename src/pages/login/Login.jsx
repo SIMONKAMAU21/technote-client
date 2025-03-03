@@ -9,24 +9,53 @@ import { ErrorToast, LoadingToast, SuccessToast } from "../../components/toaster
 import useLocalStorage from "../../hooks/useLocalStorage";
 
 const Login = () => {
-  const [formData, setFormData] = useState({ email: "", password: "demo123" });
+  const [formData, setFormData] = useState({ email: "", password: "demo123",id:"" });
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
   const { colorMode } = useColorMode();
   const [userDetails, setUserDetails] = useLocalStorage('user', null)
   // handle change for inputs
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   if(name === "email" && !value.includes("@") && isNaN(value)){
+  //     return ErrorToast("Please enter a valid email address")
+
+
+  //   }
+  //   setFormData((prev) => ({ ...prev, [name]: value }));
+  // };
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  
+    if (name === "emailOrId") {
+      if (value.includes("@")) {
+        setFormData((prev) => ({ ...prev, email: value, id: "" })); // Reset ID if email is entered
+      } else if (!isNaN(value)) {
+        setFormData((prev) => ({ ...prev, id: value, email: "" })); // Reset email if student ID is entered
+      } else {
+        ErrorToast("Please enter a valid email or student ID");
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.email && !formData.id) {
+      ErrorToast("Please enter an email or student ID");
+      return;
+    }
     try {
+      const payload = {
+        email : formData.email,
+        password: formData.password,
+        ID : formData.id
+      }
       LoadingToast(true)
-      const result = await login(formData).unwrap();
+      const result = await login(payload).unwrap();
       const response = setUserDetails({ ...result?.user, token: result?.token })
-      console.log('response', response)
+      
       SuccessToast(result?.message)
       switch (result?.user?.role) {
         case "admin":
@@ -57,7 +86,8 @@ const Login = () => {
     <AuthWrapper
       leftChildren={
         <Box
-          bg={colorMode === "light" ? "gray.100" : "gray.700"}
+          // bg={colorMode === "light" ? "gray.100" : "gray.700"}
+          bg={colorMode === "light" ? "gray.100" : "black"}
           p={8}
           rounded="md"
           shadow="lg"
@@ -67,23 +97,23 @@ const Login = () => {
           justifyContent={"center"}
           alignItems={"center"}
         >
-          <VStack boxShadow={"lg"} p={2} w={{ base: "100%", md: "50%" }} spacing={6} align="stretch" >
+          <VStack  boxShadow={"lg"} p={2} w={{ base: "100%", md: "50%" }} spacing={6} align="stretch" >
             <Heading as="h1" size="lg" >
               Login
             </Heading>
-            <Text fontSize="md" color="gray.500">
+            <Text fontSize={{base:"sm",md:"md"}} color="gray.500">
               Welcome back! Please login to access your account.
             </Text>
             <form onSubmit={handleSubmit}>
               <VStack
                 w={{ base: "100%", md: "100%" }} spacing={4} align="stretch">
                 <CustomInputs
-                  label="Email Address"
-                  name="email"
+                  label="Email Address/ student ID"
+                  name="emailOrId"
                   placeholder="Enter your email"
-                  value={formData.email}
+                  value={formData.email || formData.id}
                   onChange={handleChange}
-                  type="email"
+                  type="text"
                   width={{ base: "100%", md: "100%" }}
                 />
                 <CustomInputs
