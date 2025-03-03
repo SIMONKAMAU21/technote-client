@@ -4,6 +4,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 const users = JSON.parse(localStorage.getItem('user'))
 const token = users?.token
+
 export const LoginApi = createApi({
     reducerPath: "Login",
     tagTypes: ['users'],

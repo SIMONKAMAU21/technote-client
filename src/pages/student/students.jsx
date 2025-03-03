@@ -21,10 +21,10 @@ const Students = () => {
   // Define columns for the table
   const columns = [
     { header: "Student name", accessor: "userId.name" },
+    { header: "Student ID", accessor: "studentId" },
     { header: "Class Name", accessor: "classId.name" },
     { header: "Parent Name", accessor: "parentId.name" },
     { header: "Date of Birth", accessor: "dob" },
-    { header: "Address", accessor: "address" },
     { header: "Enrollment Date", accessor: "enrollmentDate" },
     {
       header: "Actions",
