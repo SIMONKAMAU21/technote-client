@@ -43,7 +43,7 @@ const Teachers = () => {
               size="sm"
               colorScheme="red"
               onClick={() => handleDelete(row._id)}
-              aria-label="Delete user"
+              aria-label="Delete subject"
 
             />
           </HStack>
@@ -55,7 +55,6 @@ const Teachers = () => {
 
   const handleEdit = (subject) => {
     setCurrentsubject(subject)
-    setFormMode("edit")
     onOpen()
   };
 
@@ -85,10 +84,10 @@ const Teachers = () => {
   const handleSearch = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
   }
-  const handleDelete = async (userId) => {
+  const handleDelete = async (subjectId) => {
     LoadingToast(true)
     try {
-      const response = await deleteSubject(userId).unwrap()
+      const response = await deleteSubject(subjectId).unwrap()
       SuccessToast(response.message)
       LoadingToast(false)
     } catch (error) {
@@ -101,7 +100,6 @@ const Teachers = () => {
 
   const handleAdd = () => {
     setCurrentsubject("")
-    setFormMode("add")
     onOpen()
   }
   return (
@@ -130,7 +128,7 @@ const Teachers = () => {
           />
         </Box>
       )}
-      <Subjectadd isOpen={isOpen} onClose={onClose} mode={formMode} subjectData={currentsubject} />
+      <Subjectadd isOpen={isOpen} onClose={onClose} subjectData={currentsubject} />
     </Box>
   );
 };

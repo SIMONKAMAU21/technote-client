@@ -31,7 +31,6 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-
   const isEditing = !!studentData
 
   useEffect(() => {
@@ -173,7 +172,6 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
                 h="50px"
                 name="parentId"
                 fontSize={"12px"}
-
                 value={formData.parentId}
                 onChange={handleRoleChange}
                 textTransform="capitalize"
@@ -216,8 +214,8 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
             </>
               :  <>
                
-          <HStack>
-          <VStack>
+               <HStack w={"full"}>
+               <VStack flex={1}>
               <Text fontWeight={"bold"} alignSelf={"self-start"}>Parent Name</Text>
               <Select
                 h="50px"
@@ -236,7 +234,7 @@ const StudentAdd = ({ isOpen, onClose, mode, studentData }) => {
                 ))}
               </Select>
               </VStack>
-              <VStack>
+              <VStack flex={1}>
               <Text fontWeight={"bold"} alignSelf={"self-start"}>Class  Name</Text>
               <Select
                 h="50px"
