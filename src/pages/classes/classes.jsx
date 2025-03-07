@@ -22,7 +22,7 @@ const Classes = () => {
   // Define columns for the table
   const columns = [
     { header: "class name", accessor: "name" },
-    { header: "teacher Name", accessor: "teacherId.name" },
+    { header: " class teacher Name", accessor: "teacherId.name" },
     { header: "created at", accessor: "createdAt" },
     { header: "updated at", accessor: "updatedAt" },
 
