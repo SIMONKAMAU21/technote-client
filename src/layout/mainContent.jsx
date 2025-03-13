@@ -17,7 +17,7 @@ const Maincontent = () => {
     <>
       <Header />
       <HStack align="start" spacing={0} mt="60px">
-        <Box flex="2" p={4} ml={marginLeft} w="100%" overflow="hidden">
+        <Box flex="2" p={{base:1,md:4}} ml={marginLeft} w="100%" overflow="hidden">
           <Routes>
             <Route path="/dashboard" element={<Dashbord />} />
             <Route path="/students" element={<Students />} />

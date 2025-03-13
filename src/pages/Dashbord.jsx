@@ -10,6 +10,7 @@ import {
   Spacer,
   Stack,
   Text,
+  useColorMode,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
@@ -56,6 +57,8 @@ ChartJS.register(
 );
 
 const Dashbord = () => {
+    const { colorMode } = useColorMode();
+  
   const [searchTerm, setSearchTerm] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
@@ -176,6 +179,8 @@ const Dashbord = () => {
 
       <SimpleGrid
         mt={{ base: "2%", md: "2%" }}
+        p={2}
+        bgGradient={colorMode === "light" ? "linear(to-t, #4299E1 , gray.300,white)" : "linear(to-t, #4299E1 , gray.800,#1B202D)"}
         columns={{ base: 2, md: 4 }}
         spacing={6}
         ml={{ base: "1%", md: "0" }}

@@ -62,11 +62,11 @@ const BigCallender = ({ height, width }) => {
     return matchesRole && matchesSearch;
   });
 
-  const handleSelectSlot = (slotInfo) => {
+  const handleSelectSlot = () => {
     setCurrentEvent({
       title: "",
-      start: slotInfo.start,
-      end: slotInfo.end,
+      start: "",
+      end:"",
     });
     setFormMode("add");
     onOpen();
