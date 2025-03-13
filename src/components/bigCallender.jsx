@@ -11,13 +11,11 @@ import React, { useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { useGetAllEventsQuery } from "../pages/events/eventSlice";
-import CustomButton from "./custom/button";
-import { FaAddressBook, FaPlus } from "react-icons/fa";
+import { socket, useGetAllEventsQuery } from "../pages/events/eventSlice";
 import AddEvent from "./addEvent";
-import CustomInputs from "./custom/input";
 import SearchInput from "./custom/search";
 import "../pages/events/idex.css";
+import Online from "./connect";
 
 const localizer = momentLocalizer(moment);
 
@@ -39,6 +37,8 @@ const BigCallender = ({ height, width }) => {
     onOpen();
     setFormMode("add");
   };
+
+
   const handleSelectEvent = (event) => {
     setCurrentEvent(event);
     setFormMode("edit");
@@ -85,6 +85,7 @@ const BigCallender = ({ height, width }) => {
             bgColor={"blue.300"}
             title={" Event"}
           /> */}
+          <Online/>
           <>
             <SearchInput
               value={search}

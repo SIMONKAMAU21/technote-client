@@ -6,10 +6,8 @@ const API = import.meta.env.VITE_DOMAIN
 const LOCAL = import.meta.env.VITE_LOCAL_DOMAIN
 const LOCAL_BASE = API.replace('/api', '')
 
-const socket = io(LOCAL_BASE)
-socket.on("connected", (data) => {
-    console.log(data.message);
-});
+export const socket = io(LOCAL_BASE)
+
 const users = JSON.parse(localStorage.getItem('user'))
 const token = users?.token
 export const eventApi = createApi({
