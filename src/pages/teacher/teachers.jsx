@@ -30,7 +30,6 @@ import Subjectadd from "../../components/subjectAdd";
 
 const Teachers = () => {
   const [currentsubject, setCurrentsubject] = useState(null); // Track the user being edited
-  const [formMode, setFormMode] = useState(null); // Track the user being edited
   const { data, error, isLoading } = useGetAllsubjectsQuery();
   const [searchTerm, setSearchTerm] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -42,26 +41,12 @@ const Teachers = () => {
       header: "Teacher name",
       accessor: "teacherId",
       Cell: ({ row }) => {
-        // Access the teacher data from the row
-        const teacher = row?.teacherId;
-        return (
-          <HStack spacing={2} align="center">
-            {/* Teacher avatar/image */}
-            <Box
-              w="40px"
-              h="40px"
-              borderRadius="full"
-              bg="gray.200"
-              overflow="hidden"
-            >
+        const teachers = row?.teacherId?.map((teacher) => (
+          <HStack key={teacher._id} spacing={2} align="center">
+            {/* Teacher Avatar */}
+            <Box w="40px" h="40px" borderRadius="full" bg="gray.200" overflow="hidden">
               {teacher?.image ? (
-                <Image
-                  src={teacher.image}
-                  alt={teacher.name}
-                  w="full"
-                  h="full"
-                  objectFit="cover"
-                />
+                <Image src={teacher.image} alt={teacher.name} w="full" h="full" objectFit="cover" />
               ) : (
                 <Center w="full" h="full" bg="blue.100">
                   <Text fontWeight="bold" color="blue.700">
@@ -70,20 +55,32 @@ const Teachers = () => {
                 </Center>
               )}
             </Box>
-
-            {/* Teacher name and email */}
+  
+            {/* Teacher Name & Email */}
             <VStack spacing={0} align="start">
-              <Text fontWeight="medium">{teacher?.name}</Text>
+              <Text fontWeight="medium">{teacher?.name || "No Name"}</Text>
               <Text fontSize={{ base: "12px", md: "2sm" }} color="gray.500">
                 {teacher?.email || "No email"}
               </Text>
             </VStack>
           </HStack>
-        );
+        ));
+  
+        return <VStack align="start">{teachers}</VStack>; // Display multiple teachers
       },
     },
-    { header: "class name", accessor: "classId.name" },
-    { header: "subject Name", accessor: "name" },
+    {
+      header: "Class Name",
+      accessor: "classId",
+      Cell: ({ row }) => {
+        // Ensure classId is an array and map through all classes
+        const classNames = row?.classId?.map((cls) => (
+          <Text key={cls._id}>{cls.name}</Text>
+        ));
+  
+        return <VStack align="start">{classNames}</VStack>; // Display multiple classes
+      },
+    },    { header: "subject Name", accessor: "name" },
     { header: "date of creation", accessor: "createdAt" },
     {
       header: "Actions",

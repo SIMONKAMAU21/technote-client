@@ -5,7 +5,7 @@
     align-items: center;
     justify-content: center;
     height: 36px !important;
-    background: #c8460a;
+    background: #4299E1;
   }
   
   .rbc-allday-cell {
@@ -17,7 +17,7 @@
   }
   
   .rbc-time-slot {
-    color: #ce330d;
+    color: #141618;
     z-index: 1;
   }
   
@@ -30,6 +30,7 @@
   .rbc-background-event {
     z-index: 2;
     padding: 0px !important;
+    background: #ED8936;
     border: none !important;
   }
   
