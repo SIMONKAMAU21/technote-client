@@ -198,9 +198,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   };
 
   const activeLinkStyles = {
-    backgroundColor: isDark ? '#A0AEC0' : '#ccc',
+    backgroundColor: isDark ? '#1B203D' : '#E9EEF6',
     fontWeight: 'bold',
-    color: isDark ? 'black' : 'black',
+    color: isDark ? '#EF8F02' : '#EF8F02',
   };
 
   // Define navigation items based on user roles
