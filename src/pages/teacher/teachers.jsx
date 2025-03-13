@@ -44,9 +44,21 @@ const Teachers = () => {
         const teachers = row?.teacherId?.map((teacher) => (
           <HStack key={teacher._id} spacing={2} align="center">
             {/* Teacher Avatar */}
-            <Box w="40px" h="40px" borderRadius="full" bg="gray.200" overflow="hidden">
+            <Box
+              w="40px"
+              h="40px"
+              borderRadius="full"
+              bg="gray.200"
+              overflow="hidden"
+            >
               {teacher?.image ? (
-                <Image src={teacher.image} alt={teacher.name} w="full" h="full" objectFit="cover" />
+                <Image
+                  src={teacher.image}
+                  alt={teacher.name}
+                  w="full"
+                  h="full"
+                  objectFit="cover"
+                />
               ) : (
                 <Center w="full" h="full" bg="blue.100">
                   <Text fontWeight="bold" color="blue.700">
@@ -55,7 +67,7 @@ const Teachers = () => {
                 </Center>
               )}
             </Box>
-  
+
             {/* Teacher Name & Email */}
             <VStack spacing={0} align="start">
               <Text fontWeight="medium">{teacher?.name || "No Name"}</Text>
@@ -65,7 +77,7 @@ const Teachers = () => {
             </VStack>
           </HStack>
         ));
-  
+
         return <VStack align="start">{teachers}</VStack>; // Display multiple teachers
       },
     },
@@ -77,10 +89,11 @@ const Teachers = () => {
         const classNames = row?.classId?.map((cls) => (
           <Text key={cls._id}>{cls.name}</Text>
         ));
-  
+
         return <VStack align="start">{classNames}</VStack>; // Display multiple classes
       },
-    },    { header: "subject Name", accessor: "name" },
+    },
+    { header: "subject Name", accessor: "name" },
     { header: "date of creation", accessor: "createdAt" },
     {
       header: "Actions",
