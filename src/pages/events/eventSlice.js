@@ -1,7 +1,15 @@
 
-const API = import.meta.env.VITE_DOMAIN
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { io } from 'socket.io-client'
 
+const API = import.meta.env.VITE_DOMAIN
+const LOCAL = import.meta.env.VITE_LOCAL_DOMAIN
+const LOCAL_BASE = API.replace('/api', '')
+
+const socket = io(LOCAL_BASE)
+socket.on("connected", (data) => {
+    console.log(data.message);
+});
 const users = JSON.parse(localStorage.getItem('user'))
 const token = users?.token
 export const eventApi = createApi({
@@ -18,7 +26,38 @@ export const eventApi = createApi({
                     Authorization: `JWT ${token}`, 
                 },
             }),
-            providesTags: ['events']
+            providesTags: ['events'],
+            async onCacheEntryAdded(_, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
+                try {
+                    await cacheDataLoaded;
+
+                    // Listen for real-time event updates
+                    socket.on('eventAdded', (newEvent) => {
+                        updateCachedData((draft) => {
+                            draft.push(newEvent);
+                        });
+                    });
+
+                    socket.on('eventDeleted', (eventId) => {
+                        updateCachedData((draft) => draft.filter(event => event._id !== eventId));
+                    });
+
+                    socket.on('eventUpdated', (updatedEvent) => {
+                        updateCachedData((draft) => {
+                            const index = draft.findIndex(event => event._id === updatedEvent._id);
+                            if (index !== -1) {
+                                draft[index] = updatedEvent;
+                            }
+                        });
+                    });
+                } catch (error) {
+                    console.error('Socket.io error:', error);
+                }
+                await cacheEntryRemoved;
+                socket.off('eventAdded');
+                socket.off('eventDeleted');
+                socket.off('eventUpdated');
+            }
         }),
         addEvent: builder.mutation({
             query: (user) => ({
@@ -33,8 +72,8 @@ export const eventApi = createApi({
             invalidatesTags: ['events']
         }),
         deleteEvent: builder.mutation({
-            query: (eventId) => ({
-                url: `event/${eventId}`,
+            query: (payload) => ({
+                url: `event/${payload?.id}`,
                 method: "DELETE"
             }),
             invalidatesTags:["events"]
