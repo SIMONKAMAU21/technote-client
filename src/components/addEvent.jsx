@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
+  HStack,
   Modal,
   ModalBody,
   ModalContent,
@@ -13,15 +14,17 @@ import {
 } from "@chakra-ui/react";
 import {
   useAddEventMutation,
+  useDeleteEventMutation,
   useUpdateEventMutation,
 } from "../pages/events/eventSlice";
 import CustomInputs from "./custom/input";
 import { ErrorToast, LoadingToast, SuccessToast } from "./toaster";
+import { FaTrash } from "react-icons/fa";
 
 const AddEvent = ({ onClose, isOpen, mode, eventData }) => {
   const [addEvent, { isLoading }] = useAddEventMutation();
   const [updateEvent] = useUpdateEventMutation();
-
+  const [deleteEvent ,{isLoading:isDeleting}] = useDeleteEventMutation();
   const [formData, setFormData] = useState({
     title: "",
     start: "",
@@ -44,11 +47,24 @@ const AddEvent = ({ onClose, isOpen, mode, eventData }) => {
           : "",
       });
     } else if (mode === "add") {
-      setFormData({
+      if( !eventData || (!eventData.start && !eventData.end)){
+        setFormData({
+          title: "",
+          start: "",
+          end: "",
+        });
+      }else{     setFormData({
         title: "",
-        start: "",
-        end: "",
+        start: eventData.start
+          ? new Date(eventData.start).toISOString().slice(0, 16)
+          : "",
+        end: eventData.end
+          ? new Date(eventData.end).toISOString().slice(0, 16)
+          : "",
       });
+  
+      }
+    
     }
   }, [eventData, mode]);
 
@@ -87,6 +103,23 @@ const AddEvent = ({ onClose, isOpen, mode, eventData }) => {
       LoadingToast(false);
     }
   };
+  const handleDelete = async () => {
+    const payload = {
+      id: eventData?.id,
+    };
+    try {
+      LoadingToast(true);
+      const response = await deleteEvent(payload).unwrap();
+      SuccessToast(response.message);
+      onClose();
+    } catch (error) {
+      const errorMessage =
+        error?.data?.message || "An error occurred. Please try again.";
+      ErrorToast(errorMessage);
+    } finally {
+      LoadingToast(false);
+    }
+  };
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -94,17 +127,10 @@ const AddEvent = ({ onClose, isOpen, mode, eventData }) => {
         fontSize={{ base: "15px", md: "15px" }}
         w={{ base: "90%", md: "100%" }}
       >
-        <ModalHeader>
+        <ModalHeader display={"flex"} justifyContent={"space-between"}>
           {mode === "add" ? "Add event" : "Edit event"}
-          <Box>
-            <Text color={"#ed8936"} fontSize={"12px"}>
-              Created by: {eventData?.creator}
-            </Text>
-            <Text color={"#ed8936"} fontSize={"12px"}>
-              Role:
-              {eventData?.role}
-            </Text>
-          </Box>
+{isDeleting ? <Text>deleting...</Text> : mode === "add" ? "" : <FaTrash onClick={handleDelete} />
+ }
         </ModalHeader>
         <ModalBody>
           <Box onSubmit={handleSubmit} w="full" p={4}>
@@ -145,6 +171,19 @@ const AddEvent = ({ onClose, isOpen, mode, eventData }) => {
               >
                 save
               </Button>
+              {mode === "add" ? (
+                ""
+              ) : (
+                <Box>
+                  <Text color={"#ed8936"} fontSize={"12px"}>
+                    Created by: {eventData?.creator}
+                  </Text>
+                  <Text color={"#ed8936"} fontSize={"12px"}>
+                    Role:
+                    {eventData?.role}
+                  </Text>
+                </Box>
+              )}
             </VStack>
           </Box>
         </ModalBody>
