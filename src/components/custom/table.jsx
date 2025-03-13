@@ -37,6 +37,16 @@ const CustomTable = ({ columns, data, onRowClick }) => {
       setCurrentPage(value);
     }
   };
+
+  const renderCell = (column, row) => {
+    // If the column has a custom Cell renderer, use it
+    if (column.Cell) {
+      return column.Cell({ row });
+    }
+    
+    // Otherwise render the value normally
+    return row[column.accessor];
+  };
   return (
     <>
       <HStack justify={"space-between"} mb={"3"}>
@@ -112,7 +122,7 @@ const CustomTable = ({ columns, data, onRowClick }) => {
               >
                 {columns.map((col, colIndex) => (
                   <Td textTransform={"capitalize"} key={colIndex}>
-                    {col.Cell ? col.Cell({ row }) : row[col.accessor] || "-"}{" "}
+                    {renderCell(col, row)}
                   </Td>
                 ))}
               </Tr>

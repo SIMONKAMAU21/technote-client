@@ -1,27 +1,87 @@
 import React, { useState } from "react";
 import CustomTable from "../../components/custom/table";
 import SearchInput from "../../components/custom/search";
-import { Box, HStack, IconButton, Progress, Skeleton, Stack, Text, useDisclosure } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  HStack,
+  IconButton,
+  Image,
+  Progress,
+  Skeleton,
+  Stack,
+  Text,
+  useDisclosure,
+  VStack,
+} from "@chakra-ui/react";
 import { formatDate } from "../../components/custom/dateFormat";
 import CustomButton from "../../components/custom/button";
 import { FaEdit, FaTrash, FaUserPlus } from "react-icons/fa";
-import { ErrorToast, LoadingToast, SuccessToast } from "../../components/toaster";
-import { useDeletesubjectMutation, useGetAllsubjectsQuery } from "./teacherSlice";
+import {
+  ErrorToast,
+  LoadingToast,
+  SuccessToast,
+} from "../../components/toaster";
+import {
+  useDeletesubjectMutation,
+  useGetAllsubjectsQuery,
+} from "./teacherSlice";
 import Subjectadd from "../../components/subjectAdd";
 
-
 const Teachers = () => {
-
   const [currentsubject, setCurrentsubject] = useState(null); // Track the user being edited
   const [formMode, setFormMode] = useState(null); // Track the user being edited
   const { data, error, isLoading } = useGetAllsubjectsQuery();
   const [searchTerm, setSearchTerm] = useState("");
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [deleteSubject] = useDeletesubjectMutation()
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [deleteSubject] = useDeletesubjectMutation();
 
   // Define columns for the table
   const columns = [
-    { header: "Teacher name ", accessor: "teacherId.name" },
+    {
+      header: "Teacher name",
+      accessor: "teacherId",
+      Cell: ({ row }) => {
+        // Access the teacher data from the row
+        const teacher = row?.teacherId;
+        return (
+          <HStack spacing={2} align="center">
+            {/* Teacher avatar/image */}
+            <Box
+              w="40px"
+              h="40px"
+              borderRadius="full"
+              bg="gray.200"
+              overflow="hidden"
+            >
+              {teacher?.image ? (
+                <Image
+                  src={teacher.image}
+                  alt={teacher.name}
+                  w="full"
+                  h="full"
+                  objectFit="cover"
+                />
+              ) : (
+                <Center w="full" h="full" bg="blue.100">
+                  <Text fontWeight="bold" color="blue.700">
+                    {teacher?.name?.charAt(0) || "?"}
+                  </Text>
+                </Center>
+              )}
+            </Box>
+
+            {/* Teacher name and email */}
+            <VStack spacing={0} align="start">
+              <Text fontWeight="medium">{teacher?.name}</Text>
+              <Text fontSize={{ base: "12px", md: "2sm" }} color="gray.500">
+                {teacher?.email || "No email"}
+              </Text>
+            </VStack>
+          </HStack>
+        );
+      },
+    },
     { header: "class name", accessor: "classId.name" },
     { header: "subject Name", accessor: "name" },
     { header: "date of creation", accessor: "createdAt" },
@@ -44,18 +104,16 @@ const Teachers = () => {
               colorScheme="red"
               onClick={() => handleDelete(row._id)}
               aria-label="Delete subject"
-
             />
           </HStack>
-        )
-      }
+        );
+      },
     },
   ];
 
-
   const handleEdit = (subject) => {
-    setCurrentsubject(subject)
-    onOpen()
+    setCurrentsubject(subject);
+    onOpen();
   };
 
   // Parse data for nested properties (e.g., "classId.name")
@@ -65,73 +123,93 @@ const Teachers = () => {
   // Format data for the table
   const formattedData = data
     ? data.map((subject) =>
-      columns.reduce((acc, col) => {
-        let value = parseNestedData(subject, col.accessor)
-        if (col.accessor === "createdAt") {
-          value = formatDate(value)
-        }
-        acc[col.accessor] = value
-        return acc;
-      }, {})
-    )
+        columns.reduce((acc, col) => {
+          let value = parseNestedData(subject, col.accessor);
+          if (col.accessor === "createdAt") {
+            value = formatDate(value);
+          }
+          acc[col.accessor] = value;
+          return acc;
+        }, {})
+      )
     : [];
 
-  const filteredData = formattedData?.filter((row) => columns.some((col) => {
-    const cellValue = row[col.accessor]?.toString().toLowerCase()
-    return cellValue?.includes(searchTerm)
-  }))
+  const filteredData = formattedData?.filter((row) =>
+    columns.some((col) => {
+      const cellValue = row[col.accessor]?.toString().toLowerCase();
+      return cellValue?.includes(searchTerm);
+    })
+  );
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
-  }
+  };
   const handleDelete = async (subjectId) => {
-    LoadingToast(true)
+    LoadingToast(true);
     try {
-      const response = await deleteSubject(subjectId).unwrap()
-      SuccessToast(response.message)
-      LoadingToast(false)
+      const response = await deleteSubject(subjectId).unwrap();
+      SuccessToast(response.message);
+      LoadingToast(false);
     } catch (error) {
-      ErrorToast("failed to delete a user")
-
+      ErrorToast("failed to delete a user");
     } finally {
-      LoadingToast(false)
+      LoadingToast(false);
     }
-  }
+  };
 
   const handleAdd = () => {
-    setCurrentsubject("")
-    onOpen()
-  }
+    setCurrentsubject("");
+    onOpen();
+  };
   return (
     <Box>
       <HStack>
-        <SearchInput value={searchTerm} placeholder={"search subject..."} onChange={handleSearch} />
-        <CustomButton onClick={handleAdd} leftIcon={<FaUserPlus />} formMode="add" title={"Add subject"} bgColor={"blue.400"} />
+        <SearchInput
+          value={searchTerm}
+          placeholder={"search subject..."}
+          onChange={handleSearch}
+        />
+        <CustomButton
+          onClick={handleAdd}
+          leftIcon={<FaUserPlus />}
+          formMode="add"
+          title={"Add subject"}
+          bgColor={"blue.400"}
+        />
       </HStack>
       {isLoading ? (
         <>
-          <Progress size='xs' isIndeterminate />
+          <Progress size="xs" isIndeterminate />
           <Stack mt={{ base: "2%", md: "2%" }}>
             <Skeleton h={"20px"} />
             <Skeleton h={"20px"} />
             <Skeleton h={"20px"} />
             <Skeleton h={"20px"} />
-
-          </Stack></>
+          </Stack>
+        </>
       ) : error ? (
-        <Text mt={{ base: "2%" }} fontWeight={"bold"} alignSelf={"center"} color={"red.500"}> {"Oops something went wrong check your internet connection and try again .... "}</Text>
+        <Text
+          mt={{ base: "2%" }}
+          fontWeight={"bold"}
+          alignSelf={"center"}
+          color={"red.500"}
+        >
+          {
+            "Oops something went wrong check your internet connection and try again .... "
+          }
+        </Text>
       ) : (
         <Box mt={2}>
-          <CustomTable
-            columns={columns}
-            data={filteredData}
-          />
+          <CustomTable columns={columns} data={filteredData} />
         </Box>
       )}
-      <Subjectadd isOpen={isOpen} onClose={onClose} subjectData={currentsubject} />
+      <Subjectadd
+        isOpen={isOpen}
+        onClose={onClose}
+        subjectData={currentsubject}
+      />
     </Box>
   );
 };
 
-
-export default Teachers
+export default Teachers;
