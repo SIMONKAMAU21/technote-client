@@ -21,7 +21,8 @@ import { CloseIcon, HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./sidebar";
 import Online from "../components/connect";
-import { FaBell, FaFonticons } from "react-icons/fa";
+import { FaBell, FaFonticons, FaSignOutAlt } from "react-icons/fa";
+import { FaUser } from "react-icons/fa6";
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { colorMode, toggleColorMode } = useColorMode();
@@ -58,7 +59,9 @@ const Header = () => {
     localStorage.clear();
     navigate("/");
   };
-
+const handleProfile = () =>{
+  navigate('/profile')
+}
   return (
     <>
       <Box
@@ -112,6 +115,7 @@ const Header = () => {
             color={"white"}
             onClick={() => setIsOpen(!isOpen)}
           />
+
           <Menu size={{ base: "sm" }}>
             <MenuButton as={Text}>
               <Box
@@ -140,10 +144,8 @@ const Header = () => {
               </Box>
             </MenuButton>
             <MenuList size={{ base: "sm" }}>
-              <MenuItem>New File</MenuItem>
-              <MenuItem onClick={handleLogout}>Log Out</MenuItem>
-              <MenuItem>Open...</MenuItem>
-              <MenuItem>Save File</MenuItem>
+              <MenuItem onClick={handleProfile} icon={<FaUser/>}>Profile</MenuItem>
+              <MenuItem icon={<FaSignOutAlt/>} onClick={handleLogout}>Log Out</MenuItem>
             </MenuList>
           </Menu>
 
@@ -165,11 +167,9 @@ const Header = () => {
                 </Text>
               </MenuButton>
               <MenuList>
-                <MenuItem>New File</MenuItem>
-                <MenuItem onClick={handleLogout}>Log Out</MenuItem>
-                <MenuItem>Open...</MenuItem>
-                <MenuItem>Save File</MenuItem>
-              </MenuList>
+                <MenuItem onClick={handleProfile} icon={<FaUser/>}>Profile</MenuItem>
+                <MenuItem icon={<FaSignOutAlt/>} onClick={handleLogout}>Log Out</MenuItem>
+                              </MenuList>
             </Menu>
           </VStack>
         </HStack>

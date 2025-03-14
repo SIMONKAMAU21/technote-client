@@ -9,6 +9,7 @@ import {
   useBreakpointValue,
   VStack,
 } from "@chakra-ui/react";
+import { AuthContext, AuthProvider } from "../../utils/AuthContext";
 
 const Maincontent = () => {
   const Dashbord = lazy(() => import("../pages/Dashbord"));
@@ -16,6 +17,7 @@ const Maincontent = () => {
   const Teachers = lazy(() => import("../pages/teacher/teachers"));
   const Settings = lazy(() => import("../pages/setting/settings"));
   const Classes = lazy(() => import("../pages/classes/classes"));
+  const Profile = lazy(()=>import("../pages/profile/profile"))
   const StudentDashbord = lazy(() =>
     import("../pages/studentDahbord/dashbord")
   );
@@ -27,6 +29,7 @@ const Maincontent = () => {
 
   return (
     <>
+    <AuthProvider>
       <Header />
       <HStack align="start" spacing={0} mt="60px">
         <Box
@@ -58,12 +61,14 @@ const Maincontent = () => {
               <Route path="/calender" element={<Settings />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/classes" element={<Classes />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/student/dashboard" element={<StudentDashbord />} />
               <Route path="/teacher/dashboard" element={<TeacherDashbord />} />
             </Routes>
           </Suspense>
         </Box>
       </HStack>
+      </AuthProvider>
     </>
   );
 };
