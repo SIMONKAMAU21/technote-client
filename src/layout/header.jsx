@@ -14,10 +14,14 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Image,
+  Center,
 } from "@chakra-ui/react";
 import { CloseIcon, HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./sidebar";
+import Online from "../components/connect";
+import { FaBell, FaFonticons } from "react-icons/fa";
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { colorMode, toggleColorMode } = useColorMode();
@@ -85,6 +89,7 @@ const Header = () => {
           color={"white"}
           onClick={() => setIsOpen(!isOpen)}
         />
+
         <Box sx={textStyles}>
           <Text sx={sStyles}>S</Text>
           <Text fontSize={{ base: "9px", md: "12px" }}>chool</Text>
@@ -92,19 +97,47 @@ const Header = () => {
           <Text fontSize={{ base: "9px", md: "12px" }}>anagement</Text>
         </Box>
         <HStack size={"sm"}>
+          <IconButton
+            aria-label="Toggle color mode"
+            icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+            onClick={toggleColorMode}
+            w={{ base: "40px" }}
+            h={{ base: "40px" }}
+            bg={"none"}
+            color={textStyles.color}
+          />
+          <IconButton
+            icon={<FaBell />}
+            bg={isDark ? "transparent" : "none"}
+            color={"white"}
+            onClick={() => setIsOpen(!isOpen)}
+          />
           <Menu size={{ base: "sm" }}>
             <MenuButton as={Text}>
-              <Avatar
-                size={{ base: "sm", md: "md" }}
-                name={user?.name}
-                objectFit="cover"
-                bg={theme.colors.accent.light}
+              <Box
+                w="40px"
+                h="40px"
+                borderRadius="full"
+                bg="gray.200"
+                overflow="hidden"
               >
-                <AvatarBadge
-                  bg="green"
-                  boxSize={{ base: "10px", md: "1.2em" }}
-                />
-              </Avatar>
+                {user?.photo ? (
+                  <Image
+                    src={user.photo}
+                    alt={user.name}
+                    w="full"
+                    h="full"
+                    objectFit="cover"
+                  />
+                ) : (
+                  <Center w="full" h="full" bg="blue.100">
+                    <Text fontWeight="bold" color="blue.700">
+                      {user?.name?.charAt(0) || "?"}  {user?.name?.charAt(8) || "?"}
+
+                    </Text>
+                  </Center>
+                )}
+              </Box>
             </MenuButton>
             <MenuList size={{ base: "sm" }}>
               <MenuItem>New File</MenuItem>
@@ -117,7 +150,10 @@ const Header = () => {
           <VStack display={{ base: "none", md: "block" }}>
             <Menu>
               <MenuButton color={"white"} as={Text}>
-                <Text fontWeight={"bold"} fontSize={{ base: "12px", md: "12px" }}>
+                <Text
+                  fontWeight={"bold"}
+                  fontSize={{ base: "12px", md: "12px" }}
+                >
                   {user?.email}
                 </Text>
                 <Text
@@ -136,15 +172,6 @@ const Header = () => {
               </MenuList>
             </Menu>
           </VStack>
-          <IconButton
-            aria-label="Toggle color mode"
-            icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-            onClick={toggleColorMode}
-            w={{ base: "40px" }}
-            h={{ base: "40px" }}
-            bg={"none"}
-            color={textStyles.color}
-          />
         </HStack>
       </Box>
       <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
