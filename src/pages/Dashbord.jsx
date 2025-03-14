@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDeleteUserMutation, useGetAllUsersQuery } from "./login/loginSlice";
 import {
   Box,
+  Center,
   HStack,
   IconButton,
   Image,
@@ -72,7 +73,45 @@ const Dashbord = () => {
   };
   // Define columns for the table
   const columns = [
-    { header: "name", accessor: "name" },
+    { header: "name", accessor: "name" ,
+        Cell: ({ row }) => (
+                <HStack key={row._id} spacing={2} align="center">
+                  {/* Teacher Avatar */}
+                  <Box
+                    w="40px"
+                    h="40px"
+                    borderRadius="full"
+                    bg="gray.200"
+                    overflow="hidden"
+                  >
+                    {row?.photo ? (
+                      <Image
+                        src={row.photo}
+                        alt={row.name}
+                        w="full"
+                        h="full"
+                        objectFit="cover"
+                      />
+                    ) : (
+                      <Center w="full" h="full" bg="blue.100">
+                        <Text fontWeight="bold" color="blue.700">
+                          {row?.name?.charAt(0) || "?"}
+                        </Text>
+                      </Center>
+                    )}
+                  </Box>
+      
+                  {/* Teacher Name & Email */}
+                  <VStack spacing={0} align="start">
+                    <Text fontWeight="medium">{row?.name || "No Name"}</Text>
+                    <Text fontSize={{ base: "12px", md: "2sm" }} color="gray.500">
+                      {row?.phone || "No phone"}
+                    </Text>
+                  </VStack>
+                </HStack>
+      
+                  ),
+    },
     { header: "email", accessor: "email" },
     { header: "role", accessor: "role" },
     { header: "phone", accessor: "phone" },
