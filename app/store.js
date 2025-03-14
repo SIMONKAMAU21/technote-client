@@ -5,6 +5,7 @@ import { StudentApi } from "../src/pages/student/studentSlice";
 import { ClassApi } from "../src/pages/classes/classSlice";
 import { SubjectApi } from "../src/pages/teacher/teacherSlice";
 import { eventApi } from "../src/pages/events/eventSlice";
+import { profileApi } from "../src/pages/profile/profileSlice";
 
 export const store = configureStore({
     reducer:{
@@ -12,7 +13,8 @@ export const store = configureStore({
 [StudentApi.reducerPath]:StudentApi.reducer,
 [ClassApi.reducerPath]: ClassApi.reducer,
 [SubjectApi.reducerPath]: SubjectApi.reducer,
-[eventApi.reducerPath]: eventApi.reducer
+[eventApi.reducerPath]: eventApi.reducer,
+[profileApi.reducerPath]:profileApi.reducer
 
 
     },
@@ -22,7 +24,8 @@ export const store = configureStore({
             StudentApi.middleware,
             ClassApi.middleware,
             SubjectApi.middleware,
-            eventApi.middleware
+            eventApi.middleware,
+            profileApi.middleware
         )
 })
 
