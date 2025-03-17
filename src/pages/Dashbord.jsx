@@ -58,8 +58,8 @@ ChartJS.register(
 );
 
 const Dashbord = () => {
-    const { colorMode } = useColorMode();
-  
+  const { colorMode } = useColorMode();
+
   const [searchTerm, setSearchTerm] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
@@ -73,44 +73,45 @@ const Dashbord = () => {
   };
   // Define columns for the table
   const columns = [
-    { header: "name", accessor: "name" ,
-        Cell: ({ row }) => (
-                <HStack key={row._id} spacing={2} align="center">
-                  {/* Teacher Avatar */}
-                  <Box
-                    w="40px"
-                    h="40px"
-                    borderRadius="full"
-                    bg="gray.200"
-                    overflow="hidden"
-                  >
-                    {row?.photo ? (
-                      <Image
-                        src={row.photo}
-                        alt={row.name}
-                        w="full"
-                        h="full"
-                        objectFit="cover"
-                      />
-                    ) : (
-                      <Center w="full" h="full" bg="blue.100">
-                        <Text fontWeight="bold" color="blue.700">
-                          {row?.name?.charAt(0) || "?"}
-                        </Text>
-                      </Center>
-                    )}
-                  </Box>
-      
-                  {/* Teacher Name & Email */}
-                  <VStack spacing={0} align="start">
-                    <Text fontWeight="medium">{row?.name || "No Name"}</Text>
-                    <Text fontSize={{ base: "12px", md: "2sm" }} color="gray.500">
-                      {row?.phone || "No phone"}
-                    </Text>
-                  </VStack>
-                </HStack>
-      
-                  ),
+    {
+      header: "name",
+      accessor: "name",
+      Cell: ({ row }) => (
+        <HStack key={row._id} spacing={2} align="center">
+          {/* Teacher Avatar */}
+          <Box
+            w="40px"
+            h="40px"
+            borderRadius="full"
+            bg="gray.200"
+            overflow="hidden"
+          >
+            {row?.photo ? (
+              <Image
+                src={row.photo}
+                alt={row.name}
+                w="full"
+                h="full"
+                objectFit="cover"
+              />
+            ) : (
+              <Center w="full" h="full" bg="blue.100">
+                <Text fontWeight="bold" color="blue.700">
+                  {row?.name?.charAt(0) || "?"}
+                </Text>
+              </Center>
+            )}
+          </Box>
+
+          {/* Teacher Name & Email */}
+          <VStack spacing={0} align="start">
+            <Text fontWeight="medium">{row?.name || "No Name"}</Text>
+            <Text fontSize={{ base: "12px", md: "2sm" }} color="gray.500">
+              {row?.phone || "No phone"}
+            </Text>
+          </VStack>
+        </HStack>
+      ),
     },
     { header: "email", accessor: "email" },
     { header: "role", accessor: "role" },
@@ -219,7 +220,11 @@ const Dashbord = () => {
       <SimpleGrid
         mt={{ base: "2%", md: "2%" }}
         p={2}
-        bgGradient={colorMode === "light" ? "linear(to-t, #4299E1 , gray.300,white)" : "linear(to-t, #4299E1 , gray.800,#1B202D)"}
+        bgGradient={
+          colorMode === "light"
+            ? "linear(to-t, #4299E1 , gray.300,white)"
+            : "linear(to-t, #4299E1 , gray.800,#1B202D)"
+        }
         columns={{ base: 2, md: 4 }}
         spacing={6}
         ml={{ base: "1%", md: "0" }}

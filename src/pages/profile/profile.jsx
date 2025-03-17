@@ -3,24 +3,25 @@ import {
   Box,
   Button,
   FormControl,
-  FormLabel,
-  Input,
-  VStack,
-  Heading,
-  Avatar,
-  Center,
-  Divider,
   FormErrorMessage,
-  FormHelperText,
+  VStack,
+  Avatar,
+  Image,
+  Divider,
   Text,
+  useColorMode,
+  Flex,
 } from "@chakra-ui/react";
 import CustomInputs from "../../components/custom/input";
-import { useGetUsePprofileQuery, useUpdatePasswordMutation } from "./profileSlice";
+import {
+  useGetUserProfileQuery,
+  useUpdatePasswordMutation,
+} from "./profileSlice";
 import { ErrorToast, SuccessToast } from "../../components/toaster";
+import profile from "../../assets/profile.png";
 
 const Profile = () => {
-
-
+  const { colorMode } = useColorMode();
   const [passwords, setPasswords] = useState({
     oldPassword: "",
     newPassword: "",
@@ -34,32 +35,22 @@ const Profile = () => {
   });
 
   const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
-const {data,isLoading:isFetching} =useGetUsePprofileQuery()
-
-
+  const { data } = useGetUserProfileQuery();
 
   const handlePasswordChange = (e) => {
     setPasswords({ ...passwords, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" }); // Clear error when typing
-  };
-
-  const handleUpdateProfile = () => {
-    alert("Profile updated successfully!"); // Replace with actual update logic
+    setErrors({ ...errors, [e.target.name]: "" });
   };
 
   const handleUpdatePassword = async () => {
     let newErrors = { oldPassword: "", newPassword: "", confirmPassword: "" };
 
-    if (!passwords.oldPassword) {
-      newErrors.oldPassword = "Current password is required.";
-    }
-
+    if (!passwords.oldPassword) newErrors.oldPassword = "Current password is required.";
     if (!passwords.newPassword) {
       newErrors.newPassword = "New password is required.";
     } else if (passwords.newPassword.length < 6) {
       newErrors.newPassword = "Password must be at least 6 characters.";
     }
-
     if (!passwords.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your new password.";
     } else if (passwords.newPassword !== passwords.confirmPassword) {
@@ -67,124 +58,92 @@ const {data,isLoading:isFetching} =useGetUsePprofileQuery()
     }
 
     setErrors(newErrors);
-
-    if (Object.values(newErrors).some((error) => error)) return; // Stop execution if errors exist
+    if (Object.values(newErrors).some((error) => error)) return;
 
     try {
-      const payload = {
-        oldPassword: passwords.oldPassword,
-        newPassword: passwords.newPassword,
-      };
+      const payload = { oldPassword: passwords.oldPassword, newPassword: passwords.newPassword };
       const response = await updatePassword(payload).unwrap();
       SuccessToast(response.message);
-      setPasswords({ oldPassword: "", newPassword: "", confirmPassword: "" }); // Reset fields
+      setPasswords({ oldPassword: "", newPassword: "", confirmPassword: "" });
     } catch (error) {
-    const errorMessae= error?.data?.message
-    ErrorToast(errorMessae)
+      const errorMessage = error?.data?.message || "Something went wrong. Please try again.";
+      ErrorToast(errorMessage);
     }
   };
 
   return (
-    <Center color={"black"} py={10}>
+    <Flex justify="center" py={10}>
       <VStack
-        spacing={5}
+        spacing={6}
         w={{ base: "90%", md: "50%" }}
-        p={5}
+        p={6}
         borderRadius="lg"
         boxShadow="md"
+        bg={colorMode === "dark" ? "gray.700" : "white"}
+        align="center"
       >
-        <Heading size="lg">Profile</Heading>
-        <Avatar size="xl" name={data?.name} src={data?.photo} />
-        {/* <FormControl>
-          <FormLabel>Name</FormLabel>
-          <Input
-            name="name"
-            value={user.name}
-            onChange={handleChange}
-            placeholder="Enter your name"
-          />
-        </FormControl>
-        <FormControl>
-          <FormLabel>Email</FormLabel>
-          <Input
-            name="email"
-            value={user.email}
-            onChange={handleChange}
-            placeholder="Enter your email"
-          />
-        </FormControl>
-        <FormControl>
-          <FormLabel>Phone</FormLabel>
-          <Input
-            name="phone"
-            value={user.phone}
-            onChange={handleChange}
-            placeholder="Enter your phone number"
-          />
-        </FormControl>
-        <FormControl>
-          <FormLabel>Address</FormLabel>
-          <Input
-            name="address"
-            value={user.address}
-            onChange={handleChange}
-            placeholder="Enter your address"
-          />
-        </FormControl> */}
-        <Button colorScheme="blue" onClick={handleUpdateProfile}>
-          Save Changes
-        </Button>
+        {/* Profile Header */}
+        <Box w="100%" borderRadius="lg" overflow="hidden" position={"relative"}>
+          <Image w="100%" h="100px" src={profile} objectFit="cover" />
+        </Box>
+
+        {/* Profile Avatar */}
+        <Avatar right={{base:"50%",md:"55%"}} position={"absolute"} bottom={"360px"} size={{base:"lg",md:"xl"}} name={data?.name} src={data?.photo} />
+
         <Divider />
-        <Text >Change Password</Text>
 
-        <FormControl isInvalid={errors.oldPassword}>
-          <CustomInputs
-            placeholder="Current password"
-            value={passwords.oldPassword}
-            onChange={handlePasswordChange}
-            type="password"
-            name="oldPassword"
-          />
-          {errors.oldPassword && (
+        {/* Password Change Section */}
+        <Text fontSize="lg" fontWeight="bold">
+          Change Password
+        </Text>
+
+        <Box w="100%" >
+          <FormControl isInvalid={!!errors.oldPassword}>
+            <CustomInputs
+              placeholder="Current password"
+              value={passwords.oldPassword}
+              onChange={handlePasswordChange}
+              type="password"
+              name="oldPassword"
+            />
             <FormErrorMessage>{errors.oldPassword}</FormErrorMessage>
-          )}
-        </FormControl>
+          </FormControl>
 
-        <FormControl isInvalid={errors.newPassword}>
-          <CustomInputs
-            placeholder="New password"
-            value={passwords.newPassword}
-            onChange={handlePasswordChange}
-            type="password"
-            name="newPassword"
-          />
-          {errors.newPassword && (
+          <FormControl mt={4} isInvalid={!!errors.newPassword}>
+            <CustomInputs
+              placeholder="New password"
+              value={passwords.newPassword}
+              onChange={handlePasswordChange}
+              type="password"
+              name="newPassword"
+            />
             <FormErrorMessage>{errors.newPassword}</FormErrorMessage>
-          )}
-        </FormControl>
+          </FormControl>
 
-        <FormControl isInvalid={errors.confirmPassword}>
-          <CustomInputs
-            placeholder="Confirm password"
-            value={passwords.confirmPassword}
-            onChange={handlePasswordChange}
-            type="password"
-            name="confirmPassword"
-          />
-          {errors.confirmPassword && (
+          <FormControl mt={4} isInvalid={!!errors.confirmPassword}>
+            <CustomInputs
+              placeholder="Confirm password"
+              value={passwords.confirmPassword}
+              onChange={handlePasswordChange}
+              type="password"
+              name="confirmPassword"
+            />
             <FormErrorMessage>{errors.confirmPassword}</FormErrorMessage>
-          )}
-        </FormControl>
+          </FormControl>
+        </Box>
 
+        {/* Update Button */}
         <Button
           colorScheme="green"
           onClick={handleUpdatePassword}
           isLoading={isLoading}
+          isDisabled={!passwords.oldPassword || !passwords.newPassword || !passwords.confirmPassword}
+          w="full"
         >
           Update Password
         </Button>
       </VStack>
-    </Center>
+    </Flex>
   );
 };
 

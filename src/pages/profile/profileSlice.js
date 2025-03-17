@@ -23,7 +23,7 @@ export const profileApi = createApi({
   }),
 
   endpoints: (builder) => ({
-   getUsePprofile: builder.query({
+   getUserProfile: builder.query({
       query: () => ({
         url: `users/${id}`,
         method: "GET",
@@ -49,4 +49,4 @@ export const profileApi = createApi({
   }),
 });
 
-export const {useGetUsePprofileQuery, useUploadImageMutation, useUpdatePasswordMutation } = profileApi;
+export const {useGetUserProfileQuery, useUploadImageMutation, useUpdatePasswordMutation } = profileApi;

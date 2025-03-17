@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input, InputGroup, InputLeftElement, FormControl, FormLabel, useColorMode } from '@chakra-ui/react';
 
-const CustomInputs = ({min,max, isDisabled,label,textAlign,height, value, placeholder, fontSize, icon: IconComponent, width, name, onChange,accept, variant,type, ...rest }) => {
+const CustomInputs = ({min,max, isDisabled,label,textAlign,height, value, placeholder, fontSize, icon: IconComponent, width, name, onChange,accept, variant,type,bg, ...rest }) => {
   const { colorMode } = useColorMode();
 
   return (
@@ -23,7 +23,7 @@ const CustomInputs = ({min,max, isDisabled,label,textAlign,height, value, placeh
           max={max}
           variant={variant}
           textAlign={textAlign}
-          bg={colorMode === "dark"?"none":"gray.200"}
+          bg={colorMode === "dark"?"gray.800":"gray.200" || bg}
           placeholder={placeholder}
           {...rest}
           h={height || "50px"}
