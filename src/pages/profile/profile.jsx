@@ -193,19 +193,39 @@ const Profile = () => {
         <Text fontSize="lg" fontWeight="bold">
           Update Profile Picture
         </Text>
-        <Box alignContent={"center"} display={"flex"} justifyContent={"center"} w="100%">
-        <HStack w={{base:"100%",md:"50%"}} bg={colorMode === "dark" ? "gray.800" : "gray.200"}   p={{base:"1",md:"2"}} borderRadius={"md"}>
-        <Image
+        <Box
+          alignContent={"center"}
+          display={"flex"}
+          justifyContent={"center"}
+          w="100%"
+        >
+          <HStack
             cursor={"pointer"}
             onClick={() => fileRef.current.click()}
-            src={upload}
-            width={"30px"}
-            marginTop={"2px"}
-            backgroundColor={"lightskyblue"}
+            w={{ base: "100%", md: "50%" }}
+            bg={colorMode === "dark" ? "gray.800" : "gray.200"}
+            p={{ base: "1", md: "2" }}
             borderRadius={"md"}
-          />
-          {selectedFile ? <Text>{selectedFile?.name.length>20 ?` ${selectedFile?.name.slice(0,20)}....`: selectedFile?.name}</Text> : <Text color={"gray.500"}>Upload a new profile picture</Text>}
-        </HStack>
+          >
+            <Image
+              cursor={"pointer"}
+              onClick={() => fileRef.current.click()}
+              src={upload}
+              width={"30px"}
+              marginTop={"2px"}
+              backgroundColor={"lightskyblue"}
+              borderRadius={"md"}
+            />
+            {selectedFile ? (
+              <Text>
+                {selectedFile?.name.length > 20
+                  ? ` ${selectedFile?.name.slice(0, 20)}....`
+                  : selectedFile?.name}
+              </Text>
+            ) : (
+              <Text color={"gray.500"}>Upload a new profile picture</Text>
+            )}
+          </HStack>
           <input
             type="file"
             ref={fileRef}
