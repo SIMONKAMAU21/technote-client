@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -11,15 +11,22 @@ import {
   Text,
   useColorMode,
   Flex,
+  HStack,
 } from "@chakra-ui/react";
 import CustomInputs from "../../components/custom/input";
 import {
   useGetUserProfileQuery,
   useUpdatePasswordMutation,
+  useUploadImageMutation,
 } from "./profileSlice";
-import { ErrorToast, SuccessToast } from "../../components/toaster";
+import {
+  ErrorToast,
+  LoadingToast,
+  SuccessToast,
+} from "../../components/toaster";
 import profile from "../../assets/profile.png";
-
+import CustomButton from "../../components/custom/button";
+import upload from "../../assets/upload.png";
 const Profile = () => {
   const { colorMode } = useColorMode();
   const [passwords, setPasswords] = useState({
@@ -33,10 +40,11 @@ const Profile = () => {
     newPassword: "",
     confirmPassword: "",
   });
-
+  const [selectedFile, setSelectedFile] = useState(null); // State for file upload
   const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
+  const [uploadImage, { isLoading: isUploading }] = useUploadImageMutation();
   const { data } = useGetUserProfileQuery();
-
+  const fileRef = useRef(null);
   const handlePasswordChange = (e) => {
     setPasswords({ ...passwords, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
@@ -45,7 +53,8 @@ const Profile = () => {
   const handleUpdatePassword = async () => {
     let newErrors = { oldPassword: "", newPassword: "", confirmPassword: "" };
 
-    if (!passwords.oldPassword) newErrors.oldPassword = "Current password is required.";
+    if (!passwords.oldPassword)
+      newErrors.oldPassword = "Current password is required.";
     if (!passwords.newPassword) {
       newErrors.newPassword = "New password is required.";
     } else if (passwords.newPassword.length < 6) {
@@ -61,13 +70,41 @@ const Profile = () => {
     if (Object.values(newErrors).some((error) => error)) return;
 
     try {
-      const payload = { oldPassword: passwords.oldPassword, newPassword: passwords.newPassword };
+      const payload = {
+        oldPassword: passwords.oldPassword,
+        newPassword: passwords.newPassword,
+      };
       const response = await updatePassword(payload).unwrap();
       SuccessToast(response.message);
       setPasswords({ oldPassword: "", newPassword: "", confirmPassword: "" });
     } catch (error) {
-      const errorMessage = error?.data?.message || "Something went wrong. Please try again.";
+      const errorMessage =
+        error?.data?.message || "Something went wrong. Please try again.";
       ErrorToast(errorMessage);
+    }
+  };
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+  };
+
+  const handleUploadImage = async () => {
+    if (!selectedFile) {
+      ErrorToast("Please select an image to upload.");
+      return;
+    }
+    try {
+      LoadingToast(true);
+      const formData = new FormData();
+      formData.append("photo", selectedFile);
+      const response = await uploadImage(formData).unwrap();
+      SuccessToast(response.message);
+    } catch (error) {
+      const errorMessage =
+        error?.data?.message || "Image upload failed. Try again.";
+      ErrorToast(errorMessage);
+    } finally {
+      LoadingToast(false);
     }
   };
 
@@ -88,7 +125,12 @@ const Profile = () => {
         </Box>
 
         {/* Profile Avatar */}
-        <Avatar right={{base:"50%",md:"55%"}} position={"absolute"} bottom={"360px"} size={{base:"lg",md:"xl"}} name={data?.name} src={data?.photo} />
+        <Avatar
+          mt={-12}
+          size={{ base: "lg", md: "xl" }}
+          name={data?.name}
+          src={selectedFile ? URL.createObjectURL(selectedFile) : data?.photo}
+        />
 
         <Divider />
 
@@ -97,7 +139,7 @@ const Profile = () => {
           Change Password
         </Text>
 
-        <Box w="100%" >
+        <Box w="100%">
           <FormControl isInvalid={!!errors.oldPassword}>
             <CustomInputs
               placeholder="Current password"
@@ -137,11 +179,47 @@ const Profile = () => {
           colorScheme="green"
           onClick={handleUpdatePassword}
           isLoading={isLoading}
-          isDisabled={!passwords.oldPassword || !passwords.newPassword || !passwords.confirmPassword}
+          isDisabled={
+            !passwords.oldPassword ||
+            !passwords.newPassword ||
+            !passwords.confirmPassword
+          }
           w="full"
         >
           Update Password
         </Button>
+
+        {/* Profile Picture Upload */}
+        <Text fontSize="lg" fontWeight="bold">
+          Update Profile Picture
+        </Text>
+        <Box alignContent={"center"} display={"flex"} justifyContent={"center"} w="100%">
+        <HStack w={{base:"100%",md:"50%"}} bg={colorMode === "dark" ? "gray.800" : "gray.200"}   p={{base:"1",md:"2"}} borderRadius={"md"}>
+        <Image
+            cursor={"pointer"}
+            onClick={() => fileRef.current.click()}
+            src={upload}
+            width={"30px"}
+            marginTop={"2px"}
+            backgroundColor={"lightskyblue"}
+            borderRadius={"md"}
+          />
+          {selectedFile ? <Text>{selectedFile?.name}</Text> : <Text color={"gray.500"}>Upload a new profile picture</Text>}
+        </HStack>
+          <input
+            type="file"
+            ref={fileRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
+        </Box>
+        <CustomButton
+          bgColor={"green"}
+          title={"Upload Picture"}
+          w="full"
+          onClick={handleUploadImage}
+          isLoading={isUploading}
+        />
       </VStack>
     </Flex>
   );

@@ -7,7 +7,7 @@ const getToken = () => {
 };
 const user = getToken();
 const id = user?.id;
-console.log("id", id);
+
 export const profileApi = createApi({
   reducerPath: "profile",
   tagTypes: ["profile"],
@@ -28,6 +28,8 @@ export const profileApi = createApi({
         url: `users/${id}`,
         method: "GET",
       }),
+      providesTags: ['profile']
+
     }),
 
     updatePassword: builder.mutation({
