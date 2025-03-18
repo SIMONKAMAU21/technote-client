@@ -204,7 +204,7 @@ const Profile = () => {
             backgroundColor={"lightskyblue"}
             borderRadius={"md"}
           />
-          {selectedFile ? <Text>{selectedFile?.name}</Text> : <Text color={"gray.500"}>Upload a new profile picture</Text>}
+          {selectedFile ? <Text>{selectedFile?.name.length>20 ?` ${selectedFile?.name.slice(0,20)}....`: selectedFile?.name}</Text> : <Text color={"gray.500"}>Upload a new profile picture</Text>}
         </HStack>
           <input
             type="file"
