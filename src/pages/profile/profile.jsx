@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import CustomInputs from "../../components/custom/input";
 import {
-  useGetUserProfileQuery,
+  useGetUserProfileMutation,
   useUpdatePasswordMutation,
   useUploadImageMutation,
 } from "./profileSlice";
@@ -27,6 +27,8 @@ import {
 import profile from "../../assets/profile.png";
 import CustomButton from "../../components/custom/button";
 import upload from "../../assets/upload.png";
+import { useNavigate, useNavigation } from "react-router-dom";
+
 const Profile = () => {
   const { colorMode } = useColorMode();
   const [passwords, setPasswords] = useState({
@@ -34,6 +36,7 @@ const Profile = () => {
     newPassword: "",
     confirmPassword: "",
   });
+  const navigate = useNavigate();
 
   const [errors, setErrors] = useState({
     oldPassword: "",
@@ -43,12 +46,12 @@ const Profile = () => {
   const [selectedFile, setSelectedFile] = useState(null); // State for file upload
   const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
   const [uploadImage, { isLoading: isUploading }] = useUploadImageMutation();
-  const { data } = useGetUserProfileQuery();
   const fileRef = useRef(null);
   const handlePasswordChange = (e) => {
     setPasswords({ ...passwords, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
   };
+  const [getUserProfile, { data: userData }] = useGetUserProfileMutation();
 
   const handleUpdatePassword = async () => {
     let newErrors = { oldPassword: "", newPassword: "", confirmPassword: "" };
@@ -77,6 +80,7 @@ const Profile = () => {
       const response = await updatePassword(payload).unwrap();
       SuccessToast(response.message);
       setPasswords({ oldPassword: "", newPassword: "", confirmPassword: "" });
+      navigate("/");
     } catch (error) {
       const errorMessage =
         error?.data?.message || "Something went wrong. Please try again.";
@@ -87,6 +91,9 @@ const Profile = () => {
     const file = e.target.files[0];
     setSelectedFile(file);
   };
+  useEffect(() => {
+    getUserProfile();
+  }, []);
 
   const handleUploadImage = async () => {
     if (!selectedFile) {
@@ -128,8 +135,10 @@ const Profile = () => {
         <Avatar
           mt={-12}
           size={{ base: "lg", md: "xl" }}
-          name={data?.name}
-          src={selectedFile ? URL.createObjectURL(selectedFile) : data?.photo}
+          name={userData?.name}
+          src={
+            selectedFile ? URL.createObjectURL(selectedFile) : userData?.photo
+          }
         />
 
         <Divider />

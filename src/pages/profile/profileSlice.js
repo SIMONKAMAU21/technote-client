@@ -1,20 +1,19 @@
 const API = import.meta.env.VITE_DOMAIN;
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+const LOCAL = import.meta.env.VITE_LOCAL_DOMAIN;
 
 const getToken = () => {
   const users = JSON.parse(localStorage.getItem("user"));
   return users;
 };
-const user = getToken();
-const id = user?.id;
 
 export const profileApi = createApi({
   reducerPath: "profile",
   tagTypes: ["profile"],
   baseQuery: fetchBaseQuery({
-    baseUrl: API,
+    baseUrl: LOCAL,
     prepareHeaders: (headers) => {
-      const token = user?.token;
+      const token = getToken()?.token;
       if (token) {
         headers.set("Authorization", `JWT ${token}`);
       }
@@ -23,32 +22,43 @@ export const profileApi = createApi({
   }),
 
   endpoints: (builder) => ({
-   getUserProfile: builder.query({
-      query: () => ({
-        url: `users/${id}`,
-        method: "GET",
-      }),
+   getUserProfile: builder.mutation({
+      query: () => {
+        const id = getToken()?.id;
+        return {
+          url: `/user`,
+          method: "POST",
+          body: { id },
+        };
+      },
       providesTags: ['profile']
 
     }),
 
     updatePassword: builder.mutation({
-      query: (payload) => ({
-        url: `user/password/${id}`,
-        method: "POST",
-        body: payload,
-      }),
+      query: (payload) => {
+        const id = getToken()?.id;
+        return {
+          url: `user/password/${id}`,
+          method: "POST",
+          body: payload,
+        };
+      },
       invalidatesTags: ["profile"],
     }),
     uploadImage: builder.mutation({
-      query: (payload) => ({
-        url: `/user/${id}/upload-photo`,
-        method: "POST",
-        body: payload,
-      }),
+      query: (payload) => {
+        const id = getToken()?.id;
+        return{
+          url: `/user/${id}/upload-photo`,
+          method: "POST",
+          body: payload,
+        }
+      
+      },
       invalidatesTags: ["profile"],
     }),
   }),
 });
 
-export const {useGetUserProfileQuery, useUploadImageMutation, useUpdatePasswordMutation } = profileApi;
+export const {useGetUserProfileMutation, useUploadImageMutation, useUpdatePasswordMutation } = profileApi;

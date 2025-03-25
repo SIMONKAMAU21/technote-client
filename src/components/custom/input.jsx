@@ -5,8 +5,8 @@ const CustomInputs = ({min,max, isDisabled,label,textAlign,height, value, placeh
   const { colorMode } = useColorMode();
 
   return (
-    <FormControl fontSize={{base:"10px"}} color={colorMode === "light" ? "black" : "gray.100"}>
-      {label && <FormLabel mt={"1%"} fontSize={fontSize}>{label}</FormLabel>}
+    <FormControl  fontSize={{base:"10px"}} color={colorMode === "light" ? "black" : "gray.100"}>
+      {label && <FormLabel fontWeight={"normal"} mt={"1%"} fontSize={fontSize}>{label}</FormLabel>}
       <InputGroup>
         {IconComponent && (
           <InputLeftElement pointerEvents="none">
@@ -16,7 +16,7 @@ const CustomInputs = ({min,max, isDisabled,label,textAlign,height, value, placeh
         <Input
           type={type}
           value={value}
-          fontSize={fontSize}
+          fontSize={fontSize || {base:"12px",md:"15px"}}
           onChange={onChange}
           name={name}
           ref={ref}

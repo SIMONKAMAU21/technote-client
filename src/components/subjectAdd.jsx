@@ -20,6 +20,7 @@ import {
 import { useGetAllclassesQuery } from "../pages/classes/classSlice";
 import { useGetAllUsersQuery } from "../pages/login/loginSlice";
 import { ErrorToast, LoadingToast, SuccessToast } from "./toaster";
+import SelectInput from "./custom/selectInput";
 
 const Subjectadd = ({ isOpen, onClose, mode, subjectData }) => {
   const [addSubject, { isLoading }] = useAddsubjectMutation();
