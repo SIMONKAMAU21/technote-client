@@ -11,7 +11,7 @@ export const profileApi = createApi({
   reducerPath: "profile",
   tagTypes: ["profile"],
   baseQuery: fetchBaseQuery({
-    baseUrl: LOCAL,
+    baseUrl: API,
     prepareHeaders: (headers) => {
       const token = getToken()?.token;
       if (token) {
