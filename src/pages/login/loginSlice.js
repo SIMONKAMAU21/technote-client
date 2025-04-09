@@ -1,5 +1,5 @@
-const API = import.meta.env.VITE_DOMAIN;
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { API, LOCAL, socket } from "../../../utils/socket";
 
 const getToken = () => {
   const users = JSON.parse(localStorage.getItem("user"));
@@ -26,16 +26,42 @@ export const LoginApi = createApi({
         url: `users/login`,
         method: "POST",
         body: login,
-     
       }),
     }),
     getAllUsers: builder.query({
       query: () => ({
         url: "users",
         method: "GET",
-      
       }),
       providesTags: ["users"],
+      async onCacheEntryAdded(
+        _,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) {
+        try {
+          await cacheDataLoaded;
+          socket.on("userAdded", (newUser) => {
+            updateCachedData((draft) => {
+              draft.push(newUser);
+            });
+          });
+          socket.on("userFetched", (users) => {
+            updateCachedData((draft) => {
+              return users;
+            });
+          });
+
+          socket.on("userDeleted", (userId) => {
+            updateCachedData((draft) =>
+              draft.filter((user) => user._id !== userId)
+            );
+          });
+        } catch (error) {
+          console.log("error", error);
+        }
+        await cacheEntryRemoved;
+        socket.off("userAdded");
+      },
     }),
     addUser: builder.mutation({
       query: (user) => ({
@@ -48,7 +74,7 @@ export const LoginApi = createApi({
     deleteUser: builder.mutation({
       query: (userId) => ({
         url: `users/${userId}`,
-        method: "DELETE"
+        method: "DELETE",
       }),
       invalidatesTags: ["users"],
     }),

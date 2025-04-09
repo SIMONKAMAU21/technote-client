@@ -1,16 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { io } from "socket.io-client";
+import { API, LOCAL, socket } from "../../../utils/socket";
 
-const API = import.meta.env.VITE_DOMAIN;
-const LOCAL = import.meta.env.VITE_LOCAL_DOMAIN;
-const LOCAL_BASE = API.replace("/api", "");
 
-export const socket = io(LOCAL_BASE);
-
-const getToken =() =>{
-    const users = JSON.parse(localStorage.getItem("user"));
-    return users?.token;
-}
+const getToken = () => {
+  const users = JSON.parse(localStorage.getItem("user"));
+  return users?.token;
+};
 export const eventApi = createApi({
   reducerPath: "Event",
   tagTypes: ["events"],

@@ -1,11 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   Box,
-  Button,
-  Avatar,
   HStack,
-  AvatarBadge,
   IconButton,
   useColorMode,
   useTheme,
@@ -17,12 +14,14 @@ import {
   Image,
   Center,
 } from "@chakra-ui/react";
-import { CloseIcon, HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./sidebar";
-import Online from "../components/connect";
-import { FaBell, FaFonticons, FaSignOutAlt } from "react-icons/fa";
+import { FaBell, FaSignOutAlt } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
+import { useGetUserProfileMutation } from "../pages/profile/profileSlice";
+import Online from "../components/connect";
+
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { colorMode, toggleColorMode } = useColorMode();
@@ -30,6 +29,10 @@ const Header = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
   const theme = useTheme();
+  const [userProfile, { data }] = useGetUserProfileMutation();
+  useEffect(() => {
+    userProfile();
+  }, []);
 
   const textStyles = {
     color: "white",
@@ -59,9 +62,9 @@ const Header = () => {
     localStorage.clear();
     navigate("/");
   };
-const handleProfile = () =>{
-  navigate('/profile')
-}
+  const handleProfile = () => {
+    navigate("/profile");
+  };
   return (
     <>
       <Box
@@ -98,6 +101,7 @@ const handleProfile = () =>{
           <Text fontSize={{ base: "9px", md: "12px" }}>chool</Text>
           <Text sx={sStyles}>M</Text>
           <Text fontSize={{ base: "9px", md: "12px" }}>anagement</Text>
+          {Online}
         </Box>
         <HStack size={"sm"}>
           <IconButton
@@ -125,10 +129,10 @@ const handleProfile = () =>{
                 bg="gray.200"
                 overflow="hidden"
               >
-                {user?.photo ? (
+                {data?.photo ? (
                   <Image
-                    src={user.photo}
-                    alt={user.name}
+                    src={data.photo}
+                    alt={data.name}
                     w="full"
                     h="full"
                     objectFit="cover"
@@ -136,16 +140,20 @@ const handleProfile = () =>{
                 ) : (
                   <Center w="full" h="full" bg="blue.100">
                     <Text fontWeight="bold" color="blue.700">
-                      {user?.name?.charAt(0) || "?"}  {user?.name?.charAt(8) || "?"}
-
+                      {data?.name?.charAt(0) || "?"}{" "}
+                      {data?.name?.charAt(8) || "?"}
                     </Text>
                   </Center>
                 )}
               </Box>
             </MenuButton>
             <MenuList size={{ base: "sm" }}>
-              <MenuItem onClick={handleProfile} icon={<FaUser/>}>Profile</MenuItem>
-              <MenuItem icon={<FaSignOutAlt/>} onClick={handleLogout}>Log Out</MenuItem>
+              <MenuItem onClick={handleProfile} icon={<FaUser />}>
+                Profile
+              </MenuItem>
+              <MenuItem icon={<FaSignOutAlt />} onClick={handleLogout}>
+                Log Out
+              </MenuItem>
             </MenuList>
           </Menu>
 
@@ -156,20 +164,24 @@ const handleProfile = () =>{
                   fontWeight={"bold"}
                   fontSize={{ base: "12px", md: "12px" }}
                 >
-                  {user?.email}
+                  {data?.email}
                 </Text>
                 <Text
                   fontSize={{ base: "12px", md: "12px" }}
                   textTransform={"capitalize"}
                   alignSelf={"flex-start"}
                 >
-                  {user?.role}
+                  {data?.role}
                 </Text>
               </MenuButton>
               <MenuList>
-                <MenuItem onClick={handleProfile} icon={<FaUser/>}>Profile</MenuItem>
-                <MenuItem icon={<FaSignOutAlt/>} onClick={handleLogout}>Log Out</MenuItem>
-                              </MenuList>
+                <MenuItem onClick={handleProfile} icon={<FaUser />}>
+                  Profile
+                </MenuItem>
+                <MenuItem icon={<FaSignOutAlt />} onClick={handleLogout}>
+                  Log Out
+                </MenuItem>
+              </MenuList>
             </Menu>
           </VStack>
         </HStack>

@@ -90,7 +90,6 @@ const Students = () => {
     LoadingToast(true)
     try {
       const response = await deleteStudent(userId).unwrap()
-      console.log('response', response)
       SuccessToast(response.message)
       LoadingToast(false)
     } catch (error) {

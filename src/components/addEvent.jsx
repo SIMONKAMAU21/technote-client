@@ -84,7 +84,6 @@ const AddEvent = ({ onClose, isOpen, mode, eventData }) => {
         onClose();
       } else if (mode === "edit") {
         const id = eventData.id;
-        console.log("id", id);
         const response = await updateEvent({ id, ...formData }).unwrap();
         SuccessToast(response.message);
         onClose();

@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { socket, useGetAllEventsQuery } from "../pages/events/eventSlice";
+import { useGetAllEventsQuery } from "../pages/events/eventSlice";
 import AddEvent from "./addEvent";
 import SearchInput from "./custom/search";
 import "../pages/events/idex.css";

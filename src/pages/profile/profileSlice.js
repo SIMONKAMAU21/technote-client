@@ -31,7 +31,7 @@ export const profileApi = createApi({
           body: { id },
         };
       },
-      providesTags: ['profile']
+      invalidatesTags: ['profile']
 
     }),
 

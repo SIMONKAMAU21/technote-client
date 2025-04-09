@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { socket } from "../pages/events/eventSlice";
 import { Box, Text } from "@chakra-ui/react";
+import { socket } from "../../utils/socket";
 
 const Online = ({size}) => {
   const [isConnected, setIsConnected] = useState(false);
@@ -8,6 +8,7 @@ const Online = ({size}) => {
   useEffect(() => {
     socket.on("connect", () => {
       setIsConnected(true);
+      
     });
 
     socket.on("disconnect", () => {
