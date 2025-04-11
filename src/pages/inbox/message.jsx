@@ -4,9 +4,16 @@ import {
   useGetMessagesBySenderIdQuery,
   useSendMessageMutation,
 } from "./inboxSlice";
-import { Box, Text } from "@chakra-ui/react";
-import { formatDate } from "../../components/custom/dateFormat";
+import { Box, HStack, Image, Text } from "@chakra-ui/react";
+import {
+  formatDate,
+  formatSingleDate,
+  formatTime,
+} from "../../components/custom/dateFormat";
 import { useNavigate } from "react-router-dom";
+import Conversation from "./chartTread";
+import CustomButton from "../../components/custom/button";
+import { FaPlus } from "react-icons/fa6";
 
 const Message = () => {
   const [content, setContent] = useState("");
@@ -19,7 +26,7 @@ const Message = () => {
   } = useGetMessagesBySenderIdQuery(receiverId);
   const { data: message = [], isLoading: loading } =
     useGetAllMessagesQuery(senderId);
- 
+
   const [sendMessage, { isLoading: isSending }] = useSendMessageMutation();
   const navigate = useNavigate();
   const handleSend = async () => {
@@ -37,17 +44,20 @@ const Message = () => {
   };
   return (
     <Box style={{ padding: 20 }}>
-      <h2>Messages</h2>
 
       {isLoading ? (
         <p>Loading messages...</p>
       ) : error ? (
         <p>Error loading messages</p>
       ) : (
-        <Box style={{ marginBottom: 20, border: "solid 2px" }}>
+        <Box>
           {messages?.map((msg) => (
             <Box
+              border={"1px solid #ccc"}
+              borderRadius={"5px"}
+              padding={"10px"}
               key={msg._id}
+              _hover={{ cursor: "pointer",border: "1px solid green", bgColor: "#f0f0f0" }}
               onClick={() => {
                 const senderId = msg.lastMessage.senderId._id;
                 const receiverId = msg.lastMessage.receiverId._id;
@@ -57,10 +67,33 @@ const Message = () => {
               }}
               style={{ margin: "10px 0" }}
             >
-              <Text>{formatDate(msg.lastMessage.timestamp)}</Text>{" "}
-              <Text>{msg._id}</Text>
+              <HStack fontSize={"sm"} justifyContent={"space-between"}>
+                <Text>{formatSingleDate(msg.lastMessage.timestamp)}</Text>
+                <Text fontSize={"sm"}>
+                  {formatTime(msg.lastMessage.timestamp)}
+                </Text>
+              </HStack>
+            <HStack>
+            <Box
+                w="20px"
+                h="20px"
+                borderRadius="full"
+                bg="gray.200"
+                overflow="hidden"
+              >
+                <Image
+                  src={msg?.lastMessage?.senderId.photo}
+                  alt={msg.name}
+                  w="full"
+                  h="full"
+                  objectFit="cover"
+                />
+              </Box>
               <strong>{msg?.lastMessage?.senderId?.name}</strong>:{" "}
-              {msg?.lastMessage?.content}
+
+            </HStack>
+            {msg?.lastMessage?.content}
+
             </Box>
           ))}
         </Box>
@@ -78,6 +111,8 @@ const Message = () => {
           {isSending ? "Sending..." : "Send"}
         </button>
       </Box>
+      <CustomButton onClick={()=>{}} bgColor={"blue.400"}leftIcon={<FaPlus/>} title={"Add Conversation"}/>
+      {/* <Conversation/> */}
     </Box>
   );
 };
