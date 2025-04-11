@@ -13,7 +13,7 @@ export const MessageApi = createApi({
   reducerPath: "Message",
   tagTypes: ["messages"],
   baseQuery: fetchBaseQuery({
-    baseUrl: LOCAL,
+    baseUrl: API,
     prepareHeaders: (headers) => {
       const token = getToken().token;
       if (token) {
