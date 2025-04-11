@@ -24,13 +24,13 @@ export const MessageApi = createApi({
   }),
 
   endpoints: (builder) => ({
-   
     sendMessage: builder.mutation({
       query: (payload) => ({
         url: `/message/add`,
         method: "POST",
         body: { ...payload, senderId: getToken().id },
       }),
+      invalidatesTags: ["messages"],
     }),
     getAllMessages: builder.query({
       query: () => ({
@@ -38,38 +38,6 @@ export const MessageApi = createApi({
         method: "GET",
       }),
       providesTags: ["messages"],
-      
-      async onCacheEntryAdded(
-        _,
-        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
-      ) {
-        try {
-          await cacheDataLoaded;
-          socket.on("messageAdded", (newMessage) => {
-            updateCachedData((draft) => {
-              draft.push(newMessage);
-            });
-          });
-          socket.on("messageFetched", (messages) => {
-            updateCachedData((draft) => {
-              return messages;
-            });
-          });
-
-          socket.on("messageDeleted", (messageId) => {
-            updateCachedData((draft) =>
-              draft.filter((message) => message._id !== messageId)
-            );
-          });
-        } catch (error) {
-          console.log("error", error);
-        }
-        await cacheEntryRemoved;
-        socket.off("messageAdded");
-        socket.off("messageFetched");
-        socket.off("messageDeleted");
-        socket.off("messageUpdated");
-      },
     }),
 
     deleteMessage: builder.mutation({
@@ -94,21 +62,79 @@ export const MessageApi = createApi({
         method: "GET",
       }),
       providesTags: ["messages"],
+      async onCacheEntryAdded(
+        _,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) {
+        try {
+          await cacheDataLoaded;
+          socket.on("userConversationsFetched", (populated) => {
+            console.log("Got conversation data", populated);
+            updateCachedData((draft) => {
+              if (Array.isArray(populated)) {
+                populated.forEach((msg) => draft.push(msg));
+              } else {
+                draft.push(populated); // or draft.unshift(messages) if new should come first
+              }
+            });
+          });
+        } catch (error) {
+          console.log("error", error);
+        }
+        await cacheEntryRemoved;
+        socket.off("userConversationsFetched");
+        // socket.off("messageFetched");
+        // socket.off("messageDeleted");
+        // socket.off("messageUpdated");
+      },
     }),
     getMessagesInThread: builder.query({
       query: (id) => ({
         url: `/messages/conversation/${id}`,
         method: "GET",
       }),
+
       providesTags: ["messages"],
-    })
+      async onCacheEntryAdded(
+        _,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) {
+        try {
+          await cacheDataLoaded;
+          socket.on("messagesInConversationFetched", (messages) => {
+            updateCachedData((draft) => {
+              if (Array.isArray(messages)) {
+                messages.forEach((msg) => {
+                  const exists = draft.find((m) => m._id === msg._id);
+                  if (!exists) {
+                    draft.push(msg);
+                  }
+                });
+              } else {
+                const exists = draft.find((m) => m._id === messages._id);
+                if (!exists) {
+                  draft.push(messages);
+                }
+              }
+            });
+          });
+        } catch (error) {
+          console.log("error", error);
+        }
+        await cacheEntryRemoved;
+        socket.off("messagesInConversationFetched");
+        // socket.off("messageFetched");
+        // socket.off("messageDeleted");
+        // socket.off("messageUpdated");
+      },
+    }),
   }),
 });
 
 export const {
- useSendMessageMutation,
- useGetAllMessagesQuery,
- useDeleteMessageMutation,
- useGetMessagesBySenderIdQuery,
- useGetMessagesInThreadQuery,
+  useSendMessageMutation,
+  useGetAllMessagesQuery,
+  useDeleteMessageMutation,
+  useGetMessagesBySenderIdQuery,
+  useGetMessagesInThreadQuery,
 } = MessageApi;
