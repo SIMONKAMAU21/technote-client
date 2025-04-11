@@ -10,6 +10,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { AuthContext, AuthProvider } from "../../utils/AuthContext";
+import Conversation from "../pages/inbox/chartTread";
 
 const Maincontent = () => {
   const Dashbord = lazy(() => import("../pages/Dashbord"));
@@ -24,7 +25,7 @@ const Maincontent = () => {
   const TeacherDashbord = lazy(() =>
     import("../pages/teacherDashbord/teachers")
   );
-
+const Message = lazy(()=> import ('../pages/inbox/message'))
   const marginLeft = useBreakpointValue({ base: "0", md: "15%" });
 
   return (
@@ -62,8 +63,10 @@ const Maincontent = () => {
               <Route path="/settings" element={<Settings />} />
               <Route path="/classes" element={<Classes />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/messages" element={<Message />} />
               <Route path="/student/dashboard" element={<StudentDashbord />} />
               <Route path="/teacher/dashboard" element={<TeacherDashbord />} />
+              <Route path="/inbox/:id" element={<Conversation/>} />
             </Routes>
           </Suspense>
         </Box>

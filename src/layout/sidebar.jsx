@@ -142,6 +142,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { SearchIcon } from '@chakra-ui/icons';
 import { FaHome, FaUserGraduate, FaChalkboardTeacher, FaBook, FaCog, FaClipboardList, FaCalendarAlt, FaCalendar } from 'react-icons/fa';
+import { FaMessage } from 'react-icons/fa6';
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -212,6 +213,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       { to: '/classes', label: 'Classes', icon: FaBook },
       { to: '/calender', label: 'Calender', icon: FaCalendar },
       { to: '/settings', label: 'Settings', icon: FaCog },
+      { to: '/messages', label: 'Messages', icon: FaMessage },
+
 
     ],
     teacher: [
@@ -220,12 +223,16 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       { to: '/classes', label: 'My Classes', icon: FaBook },
       { to: '/grades', label: 'Grades', icon: FaClipboardList },
       { to: '/schedule', label: 'Schedule', icon: FaCalendarAlt },
+      { to: '/messages', label: 'Messages', icon: FaMessage },
+
     ],
     student: [
       { to: 'student/dashboard', label: 'Dashboard', icon: FaHome },
       { to: '/classes', label: 'My Classes', icon: FaBook },
       { to: '/grades', label: 'My Grades', icon: FaClipboardList },
       { to: '/calender', label: 'My Schedule', icon: FaCalendarAlt },
+      { to: '/messages', label: 'Messages', icon: FaMessage },
+
     ]
   };
 
