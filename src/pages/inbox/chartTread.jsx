@@ -45,8 +45,16 @@ const Conversation = () => {
 
   const handleSend = async () => {
     if (!content.trim()) return;
+    if (!content || !receiverId) {
+      ErrorToast("Please enter a message and receiver ID");
+      return;
+    }
     try {
-      const response = await sendMessage({ content, receiverId }).unwrap();
+      const payload = {
+        content,
+        receiverId,
+      };
+      const response = await sendMessage(payload).unwrap();
       SuccessToast(response.message);
       setContent("");
     } catch (err) {
@@ -55,6 +63,7 @@ const Conversation = () => {
       console.error("Send error:", err);
     }
   };
+  //   console.log('messages', messages)
 
   return (
     <Box
@@ -73,38 +82,51 @@ const Conversation = () => {
         <p>Error loading messages</p>
       ) : (
         <Box overflow={"auto"} h={"92%"}>
-          {messages?.map((msg) => (
+          {messages.length > 0 ? (
+            messages?.map((msg) => (
+              <Box
+                key={msg?._id}
+                padding={"10px"}
+                color={msg.senderId._id === user?.id ? "white" :""}
+                style={{
+                  margin: "10px 0",
+                  display: "flex",
+                  justifyContent:
+                    msg.senderId._id === user?.id ? "flex-end" : "flex-start",
+                  textAlign: msg.senderId._id === user?.id ? "right" : "left",
+                }}
+              >
+                <Box
+                  bgColor={msg.senderId._id === user?.id ? "#4299e1" : "#F1F0F0"}
+                  p={2}
+                  borderRadius={10}
+                  style={{
+                    wordWrap: "break-word",
+                  }}
+                >
+                  <HStack>
+                    <Text fontSize={"xs"}>{formatTime(msg?.timestamp)}</Text>{" "}
+                  </HStack>
+                  {msg?.content}
+                </Box>
+              </Box>
+            ))
+          ) : (
             <Box
-              key={msg._id}
               padding={"10px"}
               style={{
                 margin: "10px 0",
                 display: "flex",
-                justifyContent:
-                  msg.senderId._id === user.id ? "flex-end" : "flex-start",
-                textAlign: msg.senderId._id === user.id ? "right" : "left",
+                justifyContent: "center",
+                textAlign: "center",
               }}
             >
-              <Box
-                bgColor={msg.senderId._id === user.id ? "#DCF8C6" : "#F1F0F0"}
-                p={2}
-                borderRadius={10}
-                boxShadow={
-                  msg.senderId._id === user.id
-                    ? "0 0 5px green"
-                    : "0 0 5px gray"
-                }
-                style={{
-                  wordWrap: "break-word",
-                }}
-              >
-                <HStack>
-                  <Text fontSize={"xs"}>{formatTime(msg.timestamp)}</Text>{" "}
-                </HStack>
-                {msg?.content}
-              </Box>
+              <Text fontSize={"sm"} color={"gray.500"}>
+                No messages yet. Start the conversation!
+              </Text>
             </Box>
-          ))}
+          )}
+
           <div ref={messageEndRef} />
         </Box>
       )}

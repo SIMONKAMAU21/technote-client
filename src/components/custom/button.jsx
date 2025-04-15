@@ -8,13 +8,20 @@ const CustomButton = ({
   leftIcon,
   rightIcon,
   width,
-  size
+  size,
+  top,
+  right,
+  bottom
+
 }) => {
   return (
     <Button
       leftIcon={leftIcon}
       size={size ? size : "sm"}
       w={width}
+      top={top}
+      right={right}
+      bottom={bottom}
       rightIcon={rightIcon}
       color={"white"}
       bgColor={bgColor}

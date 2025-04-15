@@ -56,7 +56,7 @@ export const MessageApi = createApi({
       invalidatesTags: ["users"],
     }),
 
-    getMessagesBySenderId: builder.query({
+    getConversationsByUser: builder.query({
       query: () => ({
         url: `/messages/user/${getToken().id}/conversations`,
         method: "GET",
@@ -72,7 +72,14 @@ export const MessageApi = createApi({
             console.log("Got conversation data", populated);
             updateCachedData((draft) => {
               if (Array.isArray(populated)) {
-                populated.forEach((msg) => draft.push(msg));
+                populated.forEach((msg) => {
+                  const exists = draft.find(
+                    (p) => p.conversationId === msg.conversationId
+                  );
+                  if (!exists) {
+                    draft.push(msg);
+                  }
+                });
               } else {
                 draft.push(populated); // or draft.unshift(messages) if new should come first
               }
@@ -128,6 +135,15 @@ export const MessageApi = createApi({
         // socket.off("messageUpdated");
       },
     }),
+    deleteConversation: builder.mutation({
+      query: (payload) => ({
+        url: `/messages/conversation/${getToken().id}/${
+          payload.conversationId
+        }`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["messages"],
+    }),
   }),
 });
 
@@ -135,6 +151,7 @@ export const {
   useSendMessageMutation,
   useGetAllMessagesQuery,
   useDeleteMessageMutation,
-  useGetMessagesBySenderIdQuery,
+  useGetConversationsByUserQuery,
   useGetMessagesInThreadQuery,
+  useDeleteConversationMutation,
 } = MessageApi;
