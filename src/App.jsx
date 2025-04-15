@@ -1,17 +1,17 @@
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
-import { Box } from '@chakra-ui/react'
+import { Box, useColorMode } from '@chakra-ui/react'
 import Login from './pages/login/Login'
 import { ToasterContainer } from './components/toaster'
 import Maincontent from './layout/mainContent'
 // import Maincontent from './layout/mainContent'
 
 function App() {
-
+const colorMode = useColorMode()
   return (
     <>
-      <Box h={"100%"}>
+      <Box  h={"100%"}>
         <ToasterContainer />
         <BrowserRouter>
           <Routes>

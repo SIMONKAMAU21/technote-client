@@ -7,11 +7,11 @@ import {
   import React from "react";
   import { FaSearch } from "react-icons/fa";
   
-  const SearchInput = ({ value, onChange, placeholder }) => {
+  const SearchInput = ({ value, onChange, placeholder,width }) => {
     const { colorMode } = useColorMode();
   
     return (
-      <InputGroup h={"50%"}  w={{base:"80%",md:"40%"}} borderRadius={"full"} bg={colorMode === "light" ? "gray.200" : " none"}>
+      <InputGroup h={"50%"}  w={width ||{base:"80%",md:"40%"}} borderRadius={"full"} bg={colorMode === "light" ? "gray.200" : " none"}>
         <InputLeftElement pointerEvents="none">
           <FaSearch color={colorMode === "dark" ? "gray" : "black"} />
         </InputLeftElement>
