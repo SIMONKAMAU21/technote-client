@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useDeleteUserMutation, useGetAllUsersQuery } from "./login/loginSlice";
 import {
   Box,
@@ -65,8 +65,26 @@ const Dashbord = () => {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null); // Track the user being edited
   const [formMode, setFormMode] = useState(null); // Track the user being edited
-  const { data: users, isFetching, isLoading, isError } = useGetAllUsersQuery();
+  const {
+    data: users,
+    isFetching,
+    isLoading,
+    isError,
+    error
+  } = useGetAllUsersQuery(undefined,{
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+    pollingInterval: 10000,
+  });
   const [deleteUser] = useDeleteUserMutation();
+
+  useLayoutEffect(() => {
+    if (isError === true && error.status ===401) {
+      // localStorage.removeItem("token");
+      navigate("/");
+    }
+    
+  }, [ isError, navigate]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
@@ -144,6 +162,7 @@ const Dashbord = () => {
   ];
 
   const goBack = () => {
+    
     navigate("/");
   };
   const filteredData = users?.filter((row) =>

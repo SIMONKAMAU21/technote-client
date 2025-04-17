@@ -1,18 +1,16 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API, LOCAL, socket } from "../../../utils/socket";
+import { getToken } from "../../../utils/AuthContext";
 
 
-const getToken = () => {
-  const users = JSON.parse(localStorage.getItem("user"));
-  return users?.token;
-};
+
 export const eventApi = createApi({
   reducerPath: "Event",
   tagTypes: ["events"],
   baseQuery: fetchBaseQuery({
     baseUrl: API,
     prepareHeaders: (headers) => {
-      const token = getToken();
+      const token = getToken().token;
       if (token) {
         headers.set("Authorization", `JWT ${token}`);
       }

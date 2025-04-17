@@ -1,11 +1,7 @@
-const API = import.meta.env.VITE_DOMAIN;
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-const LOCAL = import.meta.env.VITE_LOCAL_DOMAIN;
+import { getToken } from "../../../utils/AuthContext";
+import { API } from "../../../utils/socket";
 
-const getToken = () => {
-  const users = JSON.parse(localStorage.getItem("user"));
-  return users;
-};
 
 export const profileApi = createApi({
   reducerPath: "profile",

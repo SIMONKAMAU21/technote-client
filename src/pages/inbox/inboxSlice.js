@@ -1,13 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API, LOCAL, socket } from "../../../utils/socket";
+import { getToken } from "../../../utils/AuthContext";
 
-const getToken = () => {
-  const users = JSON.parse(localStorage.getItem("user"));
-  return {
-    token: users?.token,
-    id: users.id,
-  };
-};
 
 export const MessageApi = createApi({
   reducerPath: "Message",
