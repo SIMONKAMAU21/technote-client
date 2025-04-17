@@ -121,7 +121,7 @@ const Message = () => {
         <ModalOverlay />
         <ModalContent
           position="absolute"
-          bottom="0"
+          bottom={{base:"0",md:"10"}}
           left={{base:"0",md:"70%"}}
           right="0"
           m="auto"

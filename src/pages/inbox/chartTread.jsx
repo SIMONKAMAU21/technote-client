@@ -4,15 +4,20 @@ import {
   useGetMessagesInThreadQuery,
   useSendMessageMutation,
 } from "./inboxSlice";
-import { Box, HStack, Text, useColorMode } from "@chakra-ui/react";
+import { Box, HStack, Modal, Text, useColorMode } from "@chakra-ui/react";
 import { formatDate, formatTime } from "../../components/custom/dateFormat";
 import CustomInputs from "../../components/custom/input";
 import CustomButton from "../../components/custom/button";
 import { FaMessage, FaPaperPlane } from "react-icons/fa6";
 import { use } from "react";
 import { ErrorToast, SuccessToast } from "../../components/toaster";
+import { useGetAllUsersQuery } from "../login/loginSlice";
 
 const Conversation = () => {
+  const [showMentions, setShowMentions] = useState(false);
+  const [mentionQuery, setMentionQuery] = useState("");
+  const [cursorPosition, setCursorPosition] = useState(0); // optional, for better control
+
   //getting conversationId from url
   let conversationId = useParams();
   conversationId = conversationId?.id;
@@ -32,6 +37,8 @@ const Conversation = () => {
     isLoading,
     error,
   } = useGetMessagesInThreadQuery(conversationId);
+  const { data: users = [], isLoading: loadingUsers } = useGetAllUsersQuery();
+
   //scrolling to latest message
   const messageEndRef = useRef();
   useEffect(() => {
@@ -41,7 +48,7 @@ const Conversation = () => {
   }, [messages]);
 
   const [sendMessage, { isLoading: isSending }] = useSendMessageMutation();
-  const colorMode = useColorMode();
+  const {colorMode} = useColorMode();
 
   const handleSend = async () => {
     if (!content.trim()) return;
@@ -63,16 +70,18 @@ const Conversation = () => {
       console.error("Send error:", err);
     }
   };
-  //   console.log('messages', messages)
+  const mentionMatches = users.filter((user) =>
+    user.name.toLowerCase().includes(mentionQuery.toLowerCase())
+  );
 
   return (
     <Box
       h={"90%"}
-      color={colorMode === "dark" ? "white" : "black"}
+      color={colorMode === "dark" ? "black" : "black"}
       w={{ base: "100%", md: "80%" }}
       position={"fixed"}
     >
-      <Text color={colorMode === "dark" ? "blackAlpha.100" : "blackAlpha.600"}>
+      <Text color={colorMode === "dark" ? "black" : "blackAlpha.100"}>
         {receiverId}
       </Text>
 
@@ -87,7 +96,7 @@ const Conversation = () => {
               <Box
                 key={msg?._id}
                 padding={"10px"}
-                color={msg.senderId._id === user?.id ? "white" :""}
+                color={msg.senderId._id === user?.id ? "white" : ""}
                 style={{
                   margin: "10px 0",
                   display: "flex",
@@ -97,7 +106,9 @@ const Conversation = () => {
                 }}
               >
                 <Box
-                  bgColor={msg.senderId._id === user?.id ? "#4299e1" : "#F1F0F0"}
+                  bgColor={
+                    msg.senderId._id === user?.id ? "#4299e1" : "#F1F0F0"
+                  }
                   p={2}
                   borderRadius={10}
                   style={{
@@ -128,6 +139,40 @@ const Conversation = () => {
           )}
 
           <div ref={messageEndRef} />
+          {showMentions && mentionMatches.length > 0 && (
+          <Box
+            position="absolute"
+            bg={colorMode === "light" ?"white" :"#1B202D"}
+            color={colorMode === "light" ?"black" :"white"}
+            border="1px solid #ccc"
+            borderRadius="md"
+            zIndex={1000}
+            top={"75%"}
+            maxH="150px"
+            overflowY="auto"
+            mt={2}
+            w={{base:"80%",md:"30%"}}
+            p={2}
+          >
+            {mentionMatches.map((user) => (
+              <Box
+                key={user._id}
+                p={2}
+                _hover={{ bg: "gray.100", cursor: "pointer" }}
+                onClick={() => {
+                  const words = content.split(" ");
+                  words[words.length - 1] = `@${user.name}`;
+                  setContent(words.join(" ") + " ");
+                  setShowMentions(false);
+                  setMentionQuery("");
+                }}
+              >
+               <Text> @{user.name} ({user.role})
+                </Text>
+              </Box>
+            ))}
+          </Box>
+        )}
         </Box>
       )}
 
@@ -137,9 +182,22 @@ const Conversation = () => {
           placeholder={"Type a message..."}
           value={content}
           fontSize={"md"}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            setContent(value);
+            const words = value.slice(0, e.target.selectionStart).split(" ");
+            const lastWord = words[words.length - 1];
+            if (lastWord.startsWith("@")) {
+              setMentionQuery(lastWord.slice(1));
+              setShowMentions(true);
+            } else {
+              setMentionQuery("");
+              setShowMentions(false);
+            }
+          }}
           //   style={{ flex: 1, padding: 8 }}
         />
+        
         <CustomButton
           onClick={handleSend}
           disabled={isSending}
@@ -149,6 +207,7 @@ const Conversation = () => {
           title={isSending ? "Sending..." : "Send"}
         />
       </HStack>
+      
     </Box>
   );
 };

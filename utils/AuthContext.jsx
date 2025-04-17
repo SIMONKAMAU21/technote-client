@@ -28,3 +28,11 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+export const getToken = () => {
+  const users = JSON.parse(localStorage.getItem("user"));
+  return {
+    token: users?.token,
+    id: users.id,
+  };
+};
