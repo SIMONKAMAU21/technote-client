@@ -263,9 +263,9 @@ const Message = () => {
                     overflow="hidden"
                     bg="gray.300"
                   >
-                    <Image
+                    <Avatar
                       src={msg.lastMessage.senderId.photo}
-                      alt={msg.lastMessage.senderId.name}
+                      name={msg.lastMessage.senderId.name}
                       w="full"
                       h="full"
                       objectFit="cover"

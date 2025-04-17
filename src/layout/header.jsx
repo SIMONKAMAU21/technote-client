@@ -13,6 +13,7 @@ import {
   MenuItem,
   Image,
   Center,
+  Avatar,
 } from "@chakra-ui/react";
 import { HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
@@ -130,9 +131,9 @@ const Header = () => {
                 overflow="hidden"
               >
                 {data?.photo ? (
-                  <Image
+                  <Avatar
                     src={data.photo}
-                    alt={data.name}
+                    name={data.name}
                     w="full"
                     h="full"
                     objectFit="cover"
