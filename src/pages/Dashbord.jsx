@@ -45,6 +45,7 @@ import useChartOptions from "../components/custom/chart";
 import CustomButton from "../components/custom/button";
 import noData from "../assets/nodata.png";
 import { useNavigate } from "react-router-dom";
+import { handleLogout } from "../../utils/logout";
 
 ChartJS.register(
   ArcElement,
@@ -59,7 +60,6 @@ ChartJS.register(
 
 const Dashbord = () => {
   const { colorMode } = useColorMode();
-
   const [searchTerm, setSearchTerm] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
@@ -70,21 +70,24 @@ const Dashbord = () => {
     isFetching,
     isLoading,
     isError,
-    error
-  } = useGetAllUsersQuery(undefined,{
+    error,
+  } = useGetAllUsersQuery(undefined, {
     refetchOnFocus: true,
     refetchOnReconnect: true,
-    pollingInterval: 10000,
+    // pollingInterval: 2000,
   });
   const [deleteUser] = useDeleteUserMutation();
 
-  useLayoutEffect(() => {
-    if (isError === true && error.status ===401) {
-      // localStorage.removeItem("token");
-      navigate("/");
-    }
-    
-  }, [ isError, navigate]);
+  // useEffect(() => {
+  //   if (isError === true && error.status === 401) {
+  //     const timeOut = setTimeout(() => {
+  //       ErrorToast("Session expired please login again");
+  //       handleLogout()
+  //       navigate("/");
+  //     }, 3000);
+  //     return () => clearTimeout(timeOut);
+  //   }
+  // }, [isError, navigate,error]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
@@ -162,7 +165,6 @@ const Dashbord = () => {
   ];
 
   const goBack = () => {
-    
     navigate("/");
   };
   const filteredData = users?.filter((row) =>

@@ -22,6 +22,7 @@ import { FaBell, FaSignOutAlt } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
 import { useGetUserProfileMutation } from "../pages/profile/profileSlice";
 import Online from "../components/connect";
+import { handleLogout } from "../../utils/logout";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -59,13 +60,14 @@ const Header = () => {
     },
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/");
-  };
+
   const handleProfile = () => {
     navigate("/profile");
   };
+  const logOut=()=>{
+    handleLogout()
+    navigate("/")
+  }
   return (
     <>
       <Box
@@ -152,7 +154,7 @@ const Header = () => {
               <MenuItem onClick={handleProfile} icon={<FaUser />}>
                 Profile
               </MenuItem>
-              <MenuItem icon={<FaSignOutAlt />} onClick={handleLogout}>
+              <MenuItem icon={<FaSignOutAlt />} onClick={()=>logOut()}>
                 Log Out
               </MenuItem>
             </MenuList>
@@ -179,7 +181,7 @@ const Header = () => {
                 <MenuItem onClick={handleProfile} icon={<FaUser />}>
                   Profile
                 </MenuItem>
-                <MenuItem icon={<FaSignOutAlt />} onClick={handleLogout}>
+                <MenuItem icon={<FaSignOutAlt />} onClick={()=>handleLogout(navigate)}>
                   Log Out
                 </MenuItem>
               </MenuList>

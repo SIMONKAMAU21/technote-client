@@ -27,7 +27,7 @@ import {
 import profile from "../../assets/profile.png";
 import CustomButton from "../../components/custom/button";
 import upload from "../../assets/upload.png";
-import { useNavigate, useNavigation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const { colorMode } = useColorMode();
@@ -47,6 +47,7 @@ const Profile = () => {
   const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
   const [uploadImage, { isLoading: isUploading }] = useUploadImageMutation();
   const fileRef = useRef(null);
+
   const handlePasswordChange = (e) => {
     setPasswords({ ...passwords, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
@@ -87,6 +88,7 @@ const Profile = () => {
       ErrorToast(errorMessage);
     }
   };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
@@ -94,7 +96,7 @@ const Profile = () => {
   useEffect(() => {
     getUserProfile();
   }, []);
-
+//uploading image
   const handleUploadImage = async () => {
     if (!selectedFile) {
       ErrorToast("Please select an image to upload.");
@@ -114,7 +116,6 @@ const Profile = () => {
       LoadingToast(false);
     }
   };
-
   return (
     <Flex justify="center" py={10}>
       <VStack
@@ -153,6 +154,7 @@ const Profile = () => {
             <CustomInputs
               placeholder="Current password"
               value={passwords.oldPassword}
+              // defaultValue={userData.}
               onChange={handlePasswordChange}
               type="password"
               name="oldPassword"

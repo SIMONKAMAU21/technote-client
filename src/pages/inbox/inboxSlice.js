@@ -7,7 +7,7 @@ export const MessageApi = createApi({
   reducerPath: "Message",
   tagTypes: ["messages"],
   baseQuery: fetchBaseQuery({
-    baseUrl: API,
+    baseUrl: LOCAL,
     prepareHeaders: (headers) => {
       const token = getToken().token;
       if (token) {
@@ -49,7 +49,6 @@ export const MessageApi = createApi({
       }),
       invalidatesTags: ["users"],
     }),
-
     getConversationsByUser: builder.query({
       query: () => ({
         url: `/messages/user/${getToken().id}/conversations`,

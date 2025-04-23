@@ -2,7 +2,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API, LOCAL, socket } from "../../../utils/socket";
 import { getToken } from "../../../utils/AuthContext";
 
-
 export const LoginApi = createApi({
   reducerPath: "Login",
   tagTypes: ["users"],
