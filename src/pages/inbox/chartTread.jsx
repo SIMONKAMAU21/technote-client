@@ -4,7 +4,7 @@ import {
   useGetMessagesInThreadQuery,
   useSendMessageMutation,
 } from "./inboxSlice";
-import { Box, HStack, Modal, Text, useColorMode } from "@chakra-ui/react";
+import { Avatar, Box, HStack, Modal, Text, useColorMode } from "@chakra-ui/react";
 import { formatDate, formatTime } from "../../components/custom/dateFormat";
 import CustomInputs from "../../components/custom/input";
 import CustomButton from "../../components/custom/button";
@@ -116,9 +116,9 @@ const Conversation = () => {
                   }}
                 >
                   <HStack>
-                    <Text fontSize={"xs"}>{formatTime(msg?.timestamp)}</Text>{" "}
                   </HStack>
                   {msg?.content}
+                  <Text  fontSize={"10px"}>{formatTime(msg?.timestamp)}</Text>
                 </Box>
               </Box>
             ))
@@ -167,8 +167,11 @@ const Conversation = () => {
                   setMentionQuery("");
                 }}
               >
-               <Text> @{user.name} ({user.role})
+                <HStack>
+                 <Avatar name={user.name} size={{ base: "sm", md: "sm" }} src={user.photo}/> 
+               <Text> {user.name} ({user.role})
                 </Text>
+                </HStack>
               </Box>
             ))}
           </Box>

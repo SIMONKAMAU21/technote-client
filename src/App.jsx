@@ -17,6 +17,7 @@ const colorMode = useColorMode()
           <Routes>
             <Route path='/' element={<Login />} />
             <Route path='/*' element={<Maincontent/>} />
+            
           </Routes>
         </BrowserRouter>
       </Box>
