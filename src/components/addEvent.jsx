@@ -24,7 +24,7 @@ import { FaTrash } from "react-icons/fa";
 const AddEvent = ({ onClose, isOpen, mode, eventData }) => {
   const [addEvent, { isLoading }] = useAddEventMutation();
   const [updateEvent] = useUpdateEventMutation();
-  const [deleteEvent ,{isLoading:isDeleting}] = useDeleteEventMutation();
+  const [deleteEvent, { isLoading: isDeleting }] = useDeleteEventMutation();
   const [formData, setFormData] = useState({
     title: "",
     start: "",
@@ -47,24 +47,23 @@ const AddEvent = ({ onClose, isOpen, mode, eventData }) => {
           : "",
       });
     } else if (mode === "add") {
-      if( !eventData || (!eventData.start && !eventData.end)){
+      if (!eventData || (!eventData.start && !eventData.end)) {
         setFormData({
           title: "",
           start: "",
           end: "",
         });
-      }else{     setFormData({
-        title: "",
-        start: eventData.start
-          ? new Date(eventData.start).toISOString().slice(0, 16)
-          : "",
-        end: eventData.end
-          ? new Date(eventData.end).toISOString().slice(0, 16)
-          : "",
-      });
-  
+      } else {
+        setFormData({
+          title: "",
+          start: eventData.start
+            ? new Date(eventData.start).toISOString().slice(0, 16)
+            : "",
+          end: eventData.end
+            ? new Date(eventData.end).toISOString().slice(0, 16)
+            : "",
+        });
       }
-    
     }
   }, [eventData, mode]);
 
@@ -128,8 +127,13 @@ const AddEvent = ({ onClose, isOpen, mode, eventData }) => {
       >
         <ModalHeader display={"flex"} justifyContent={"space-between"}>
           {mode === "add" ? "Add event" : "Edit event"}
-{isDeleting ? <Text>deleting...</Text> : mode === "add" ? "" : <FaTrash onClick={handleDelete} />
- }
+          {isDeleting ? (
+            <Text>deleting...</Text>
+          ) : mode === "add" ? (
+            ""
+          ) : (
+            <FaTrash onClick={handleDelete} />
+          )}
         </ModalHeader>
         <ModalBody>
           <Box onSubmit={handleSubmit} w="full" p={4}>

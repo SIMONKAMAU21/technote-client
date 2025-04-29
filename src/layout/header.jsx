@@ -60,14 +60,13 @@ const Header = () => {
     },
   };
 
-
   const handleProfile = () => {
     navigate("/profile");
   };
-  const logOut=()=>{
-    handleLogout()
-    navigate("/")
-  }
+  const logOut = () => {
+    handleLogout();
+    navigate("/");
+  };
   return (
     <>
       <Box
@@ -154,7 +153,7 @@ const Header = () => {
               <MenuItem onClick={handleProfile} icon={<FaUser />}>
                 Profile
               </MenuItem>
-              <MenuItem icon={<FaSignOutAlt />} onClick={()=>logOut()}>
+              <MenuItem icon={<FaSignOutAlt />} onClick={() => logOut()}>
                 Log Out
               </MenuItem>
             </MenuList>
@@ -181,7 +180,10 @@ const Header = () => {
                 <MenuItem onClick={handleProfile} icon={<FaUser />}>
                   Profile
                 </MenuItem>
-                <MenuItem icon={<FaSignOutAlt />} onClick={()=>handleLogout(navigate)}>
+                <MenuItem
+                  icon={<FaSignOutAlt />}
+                  onClick={() => handleLogout(navigate)}
+                >
                   Log Out
                 </MenuItem>
               </MenuList>

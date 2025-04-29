@@ -228,8 +228,8 @@ const Message = () => {
         <Text>Error loading messages</Text>
       ) : (
         <Box p={4}>
-          {conversations.length > 0 ? (
-            conversations.map((msg) => (
+          {conversations?.length > 0 ? (
+            conversations?.map((msg) => (
               <Box
                 key={msg._id}
                 borderRadius="5px"

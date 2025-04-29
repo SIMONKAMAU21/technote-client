@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useDeleteUserMutation, useGetAllUsersQuery } from "./login/loginSlice";
 import {
+  Avatar,
   Box,
   Center,
   HStack,
@@ -108,11 +109,10 @@ const Dashbord = () => {
             overflow="hidden"
           >
             {row?.photo ? (
-              <Image
+              <Avatar
                 src={row.photo}
-                alt={row.name}
-                w="full"
-                h="full"
+                name={row.name}
+                size={{ base: "sm", md: "md" }}
                 objectFit="cover"
               />
             ) : (
