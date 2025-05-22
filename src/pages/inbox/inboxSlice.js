@@ -25,6 +25,45 @@ export const MessageApi = createApi({
         body: { ...payload, senderId: getToken().id },
       }),
       invalidatesTags: ["messages"],
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          socket.emit("messageAdded", data);
+          socket.emit("messageSent", data);
+        } catch (error) {
+          console.log("error", error);
+        }
+      },
+      async onCacheEntryAdded(
+        _,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) {
+        try {
+          await cacheDataLoaded;
+          socket.on("messageAdded", (message) => {
+            // console.log("Got message data", message);
+            updateCachedData((draft) => {
+              if (Array.isArray(message)) {
+                message.forEach((msg) => {
+                  const exists = draft.find((m) => m._id === msg._id);
+                  if (!exists) {
+                    draft.push(msg);
+                  }
+                });
+              } else {
+                const exists = draft.find((m) => m._id === message._id);
+                if (!exists) {
+                  draft.push(message);
+                }
+              }
+            });
+          });
+        } catch (error) {
+          console.log("error", error);
+        }
+        await cacheEntryRemoved;
+        socket.off("messageFetched");
+      },
     }),
     getAllMessages: builder.query({
       query: () => ({
@@ -62,7 +101,7 @@ export const MessageApi = createApi({
         try {
           await cacheDataLoaded;
           socket.on("userConversationsFetched", (populated) => {
-            console.log("Got conversation data", populated);
+            // console.log("Got conversation data", populated);
             updateCachedData((draft) => {
               if (Array.isArray(populated)) {
                 populated.forEach((msg) => {
@@ -95,38 +134,39 @@ export const MessageApi = createApi({
       }),
 
       providesTags: ["messages"],
-      async onCacheEntryAdded(
-        _,
-        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
-      ) {
-        try {
-          await cacheDataLoaded;
-          socket.on("messagesInConversationFetched", (messages) => {
-            updateCachedData((draft) => {
-              if (Array.isArray(messages)) {
-                messages.forEach((msg) => {
-                  const exists = draft.find((m) => m._id === msg._id);
-                  if (!exists) {
-                    draft.push(msg);
-                  }
-                });
-              } else {
-                const exists = draft.find((m) => m._id === messages._id);
-                if (!exists) {
-                  draft.push(messages);
-                }
-              }
-            });
-          });
-        } catch (error) {
-          console.log("error", error);
-        }
-        await cacheEntryRemoved;
-        socket.off("messagesInConversationFetched");
-        // socket.off("messageFetched");
-        // socket.off("messageDeleted");
-        // socket.off("messageUpdated");
-      },
+      // async onCacheEntryAdded(
+      //   _,
+      //   { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      // ) {
+      //   try {
+      //     await cacheDataLoaded;
+      //     socket.on("messagesInConversationFetched", (messages) => {
+      //       console.log("Got message data", messages);
+      //       updateCachedData((draft) => {
+      //         if (Array.isArray(messages)) {
+      //           messages.forEach((msg) => {
+      //             const exists = draft.find((m) => m._id === msg._id);
+      //             if (!exists) {
+      //               draft.push(msg);
+      //             }
+      //           });
+      //         } else {
+      //           const exists = draft.find((m) => m._id === messages._id);
+      //           if (!exists) {
+      //             draft.push(messages);
+      //           }
+      //         }
+      //       });
+      //     });
+      //   } catch (error) {
+      //     console.log("error", error);
+      //   }
+      //   await cacheEntryRemoved;
+      //   // socket.off("messagesInConversationFetched");`
+      //   // socket.off("messageFetched");
+      //   // socket.off("messageDeleted");
+      //   // socket.off("messageUpdated");
+      // },
     }),
     deleteConversation: builder.mutation({
       query: (payload) => ({

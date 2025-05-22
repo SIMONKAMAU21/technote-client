@@ -112,7 +112,7 @@ const Dashbord = () => {
               <Avatar
                 src={row.photo}
                 name={row.name}
-                size={{ base: "sm", md: "md" }}
+                // size={{ base: "sm", md: "md" }}
                 objectFit="cover"
               />
             ) : (
