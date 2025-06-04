@@ -42,6 +42,7 @@ const Message = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [message, setMessage] = useState("");
   const [searchTerm, setsearchTerm] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const {
     data: conversations = [],
@@ -90,25 +91,55 @@ const Message = () => {
   const handleSearch = (e) => {
     setsearchTerm(e.target.value);
   };
+  const handleConversationSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
   const filterUsers = (users, searchTerm) => {
     if (!searchTerm) return users;
     return users.filter((user) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
+  const filterMessages = (conversations, searchQuery) => {
+    if (!searchQuery) return conversations;
+    return conversations.filter(
+      (conversation) =>
+        conversation.lastMessage.content
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        conversation.lastMessage.receiverId.name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        conversation.lastMessage.senderId.name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+    );
+  };
 
   const filteredData = filterUsers(users, searchTerm);
-
+  const filteredConversations = filterMessages(conversations, searchQuery);
   return (
-    <Box p={5}>
-       <CustomButton
-        onClick={onOpen}
-        // top={"100%"}
-        // bottom={"10%"}
-        bgColor={"blue.400"}
-        leftIcon={<FaPlus />}
-        title={"Add Conversation"}
-      />
+    <Box p={{ base: 2, md: 5 }} w={{ base: "100%", md: "90%" }} h="90vh">
+      <HStack
+        justifyContent="space-between"
+        alignItems="center"
+        w={{ base: "100%", md: "70%" }}
+      >
+        <CustomButton
+          onClick={onOpen}
+          // top={"100%"}
+          // bottom={"10%"}
+          bgColor={"blue.400"}
+          leftIcon={<FaPlus />}
+          title={"Add Conversation"}
+        />
+        <SearchInput
+          value={searchQuery}
+          width={"70%"}
+          onChange={handleConversationSearch}
+          placeholder={"search ... "}
+        />
+      </HStack>
       {/* Modal */}
       <Modal
         isOpen={isOpen}
@@ -121,8 +152,8 @@ const Message = () => {
         <ModalOverlay />
         <ModalContent
           position="absolute"
-          bottom={{base:"0",md:"10"}}
-          left={{base:"0",md:"70%"}}
+          bottom={{ base: "0", md: "10" }}
+          left={{ base: "0", md: "70%" }}
           right="0"
           m="auto"
           borderTopRadius="xl"
@@ -141,7 +172,15 @@ const Message = () => {
             </VStack>
           </ModalHeader>
           <ModalCloseButton />
-          <ModalBody overflowY={"scroll"}>
+          <ModalBody
+            overflowY={"scroll"}
+            sx={{
+              scrollbarWidth: "none",
+              "&::webkit-scroll": {
+                display: "none",
+              },
+            }}
+          >
             {!selectedUser ? (
               <VStack align="stretch" spacing={3}>
                 {loadingUsers ? (
@@ -223,85 +262,123 @@ const Message = () => {
 
       {/* Existing Messages List */}
       {isLoading ? (
-        <Spinner size={"sm"}/>
+        <Spinner size={"sm"} />
       ) : error ? (
         <Text>Error loading messages</Text>
       ) : (
-        <Box p={4}>
-          {conversations?.length > 0 ? (
-            conversations?.map((msg) => (
+        <Box
+          p={{ base: 2, md: 2 }}
+          w={"100%"}
+          h={"100%"}
+          overflow={"auto"}
+          sx={{
+            scrollbarWidth: "none",
+            "&::-webkit-scrollbar": {
+              display: "none",
+            },
+          }}
+        >
+          {filteredConversations?.length > 0 ? (
+            filteredConversations?.map((msg) => (
               <Box
                 key={msg._id}
                 borderRadius="5px"
-                bg={colorMode === "light" ? "gray.200" : "gray.700"}
-                p={3}
+                w={"100%"}
+                // bg={colorMode === "light" ? "gray.200" : "gray.700"}
+                pl={{ base: "0%", md: "10%" }}
+                pr={{ base: "0%", md: "10%" }}
                 mb={2}
                 _hover={{
                   cursor: "pointer",
-                  border: "1px solid green",
-                  bgColor: colorMode === "dark" ? "" : "#ccc",
+                  bgColor: colorMode === "dark" ? "gray.600" : "gray.100",
                 }}
               >
                 <HStack justifyContent="space-between" fontSize="sm">
                   <Text>{formatSingleDate(msg.lastMessage.timestamp)}</Text>
-                  <Text>{formatTime(msg.lastMessage.timestamp)}</Text>
-                 
                 </HStack>
                 <HStack
+                  w={"100%"}
                   onClick={() => {
                     const senderId = msg.lastMessage.senderId._id;
                     const receiverId = msg.lastMessage.receiverId._id;
+                    const photo = msg.lastMessage.receiverId.photo;
+                    const receiverName = msg.lastMessage.receiverId.name;
                     const sortedIds = [senderId, receiverId].sort();
                     const conversationId = sortedIds.join("_");
-                    navigate(`/inbox/${conversationId}`);
+                    // navigate(`/inbox/${conversationId}/${receiverName}/${photo}`,);
+
+                    navigate(
+                      `/inbox/${conversationId}?receiverName=${encodeURIComponent(
+                        receiverName
+                      )}&photo=${encodeURIComponent(photo)}`
+                    );
                   }}
                 >
                   <Box
-                    w="20px"
-                    h="20px"
+                    w="40px"
+                    h="40px"
                     borderRadius="full"
                     overflow="hidden"
                     bg="gray.300"
                   >
                     <Avatar
-                      src={msg.lastMessage.senderId.photo}
-                      name={msg.lastMessage.senderId.name}
+                      src={msg.lastMessage.receiverId.photo}
+                      name={msg.lastMessage.receiverId.name}
                       w="full"
                       h="full"
                       objectFit="cover"
                     />
                   </Box>
-                  <strong>{msg.lastMessage.senderId.name}</strong>
+                  <VStack
+                    about="flex-start"
+                    alignItems="flex-start"
+                    w={"100%"}
+                    lineHeight={"base"}
+                  >
+                    <strong>{msg.lastMessage.receiverId.name}</strong>
+
+                    <HStack justifyContent="space-between" w="100%">
+                      <Text fontSize="sm">
+                        {msg.lastMessage.content.length > 40
+                          ? msg.lastMessage.content.slice(0, 40) + "..."
+                          : msg.lastMessage.content}
+                      </Text>
+                      <HStack justifyContent={"space-between"}>
+                        <Text>{formatTime(msg.lastMessage.timestamp)}</Text>
+
+                        {isDeleting ? (
+                          <Spinner size="xs" />
+                        ) : (
+                          <Box onClick={() => handleDelete(msg._id)}>
+                            <FaTrash size={16} />
+                          </Box>
+                        )}
+                      </HStack>
+                    </HStack>
+                  </VStack>
                 </HStack>
-                <HStack justifyContent={"space-between"}>
-                <Text fontSize="sm">
-                  {msg.lastMessage.content.length > 40
-                    ? msg.lastMessage.content.slice(0, 40) + "..."
-                    : msg.lastMessage.content}
-                </Text>
-                {isDeleting ? (
-                    <Spinner size="xs" />
-                  ) : (
-                    <Box onClick={() => handleDelete(msg._id)}>
-                      <FaTrash size={16} />
-                    </Box>
-                  )}
-                </HStack>
-             
+
+                {filteredConversations.length > 0 && (
+                  <Box
+                    border={"1px solid "}
+                    mt={2}
+                    borderColor={colorMode === "dark" ? "gray.600" : "gray.100"}
+                  ></Box>
+                )}
               </Box>
             ))
           ) : (
-            <Text bottom={"50%"} textAlign="center" color="gray.500">
-            <Link onClick={onOpen}>  No Conversations yet.
-              Start the conversation!
-              </Link> 
+            <Text bottom={"0%"} textAlign="center" mt={"20%"} color="gray.500">
+              <Link onClick={onOpen}>
+                {" "}
+                No Conversations yet. Start the conversation!
+              </Link>
             </Text>
           )}
         </Box>
       )}
 
       {/* Add Conversation Button */}
-  
     </Box>
   );
 };

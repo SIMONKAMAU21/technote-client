@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import {
   useGetMessagesInThreadQuery,
   useSendMessageMutation,
@@ -16,20 +16,20 @@ import { formatDate, formatTime } from "../../components/custom/dateFormat";
 import CustomInputs from "../../components/custom/input";
 import CustomButton from "../../components/custom/button";
 import { FaMessage, FaPaperPlane } from "react-icons/fa6";
-import { use } from "react";
 import { ErrorToast, SuccessToast } from "../../components/toaster";
 import { useGetAllUsersQuery } from "../login/loginSlice";
 import { socket } from "../../../utils/socket";
+import SearchInput from "../../components/custom/search";
 
 const Conversation = () => {
   const [showMentions, setShowMentions] = useState(false);
   const [mentionQuery, setMentionQuery] = useState("");
-  const [cursorPosition, setCursorPosition] = useState(0);
   const [newMessages, setNewMessages] = useState([]);
+const { conversationId } = useParams();
+  const [searchParams] = useSearchParams();
+  const receiverName = searchParams.get("receiverName");
+  const photo = searchParams.get("photo");
 
-  //getting conversationId from url
-  let conversationId = useParams();
-  conversationId = conversationId?.id;
 
   //fetching messages by conversationId
   const {
@@ -43,32 +43,32 @@ const Conversation = () => {
   // Combine existing messages with new messages
   const allMessages = useMemo(() => {
     const combined = [...existingMessages, ...newMessages];
-    
+
     // Sort by timestamp to maintain chronological order
-    return combined.sort((a, b) => 
-      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    return combined.sort(
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     );
   }, [existingMessages, newMessages]);
 
   // Socket connection and message handling
   useEffect(() => {
     if (conversationId) {
-      // console.log("first", conversationId);
-      // Join the conversation room
       socket.emit("joinConversation", conversationId);
-      
       socket.on("messageAdded", (message) => {
         // console.log("message", message);
         setNewMessages((prevMessages) => {
           // Check if message already exists to avoid duplicates
-          const messageExists = prevMessages.some(msg => msg._id === message._id);
+          const messageExists = prevMessages.some(
+            (msg) => msg._id === message._id
+          );
           if (!messageExists) {
             return [...prevMessages, message];
           }
           return prevMessages;
         });
       });
-      
+
       return () => {
         // Leave room when component unmounts or conversationId changes
         socket.emit("leaveConversation", conversationId);
@@ -92,7 +92,6 @@ const Conversation = () => {
   //getting reciver id from conversationId
   const user = JSON.parse(localStorage.getItem("user"));
   const receiverId = getReceiverIdFromConversation(conversationId, user.id);
-
   const [content, setContent] = useState("");
 
   //scrolling to latest message
@@ -136,19 +135,42 @@ const Conversation = () => {
     <Box
       h={"90%"}
       color={colorMode === "dark" ? "black" : "black"}
-      w={{ base: "100%", md: "80%" }}
+      w={{ base: "100%", md: "90%" }}
       position={"fixed"}
     >
-      <Text color={colorMode === "dark" ? "black" : "blackAlpha.100"}>
-        {receiverId}
-      </Text>
+      <HStack p={{base:1,md:2}} w={{ base: "100%", md: "50%" }} justifyContent={"space-between"}>
+       <HStack spacing={2}>
+         <Avatar
+          name={receiverName}
+          size={{ base: "sm", md: "md" }}
+          src={photo}
+          />
+        <Text color={colorMode === "dark" ? "white" : "blackAlpha.100"} fontSize={{base:"xs",md:"md"}}>
+          {receiverName}
+        </Text>
+       </HStack>
+        <SearchInput
+          // value={searchQuery}
+          width={"70%"}
+          // onChange={handleConversationSearch}
+          placeholder={"search ... "}
+        />
+      </HStack>
 
       {isLoading ? (
         <p>Loading messages...</p>
       ) : error ? (
         <p>Error loading messages</p>
       ) : (
-        <Box overflow={"auto"} h={"92%"}>
+        <Box
+          overflow={"auto"}
+          scrollMargin={"-1"}
+          h={{base:"90%",md:"85%"}}
+          w={"100%"}
+          pl={{ base: "0", md: "20%" }}
+          pr={{ base: "0", md: "20%" }}
+          pt={"0px"}
+        >
           {allMessages.length > 0 ? (
             allMessages?.map((msg) => (
               <Box
@@ -210,6 +232,12 @@ const Conversation = () => {
               mt={2}
               w={{ base: "80%", md: "30%" }}
               p={2}
+              sx={{
+                scrollbarWidth: "none",
+                "&::-webkit-scrollbar": {
+                  display: "none",
+                },
+              }}
             >
               {mentionMatches.map((user) => (
                 <Box
@@ -242,7 +270,7 @@ const Conversation = () => {
         </Box>
       )}
 
-      <HStack p={2} mb={-10}>
+      <HStack w={{ base: "100%", md: "90%" }} pb={"10%"} p={{base:1,md:"-15%"}} >
         <CustomInputs
           type={"text"}
           placeholder={"Type a message..."}
